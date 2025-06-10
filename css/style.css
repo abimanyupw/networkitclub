@@ -1,0 +1,1132 @@
+:root {
+  --black: black;
+  --blue: #3c42eb;
+  --white: white;
+  --bg: #1b1b1b; /* Definisi --bg ditambahkan */
+  --primary: var(--blue); /* Contoh: Anda bisa mendefinisikan primary color */
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--black);
+  overflow-x: hidden;
+}
+header {
+  display: inline;
+  overflow-x: hidden;
+}
+.navbar-container {
+  width: 100%;
+  margin-inline: auto;
+  align-items: center;
+  height: 200px;
+  gap: 1rem;
+  background-image: url(../img/header.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top;
+  display: flex;
+}
+.navbar-container .title {
+  color: var(--white);
+  font-weight: 500;
+  font-size: 1.7rem;
+  text-shadow: 2px 2px 2px var(--black);
+}
+.logo img {
+  width: 100px;
+  margin-left: 1.5rem;
+  border-radius: 50%;
+  box-shadow: 0.5px 0.5px 4px var(--black);
+}
+.nav-list {
+  background-color: var(--blue);
+  padding: 10px;
+  justify-content: space-around;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid rgb(0, 0, 0);
+  position: sticky;
+  z-index: 9999;
+  top: 0;
+}
+.nav-list ul {
+  display: flex;
+  gap: 1rem 3rem;
+  justify-content: center;
+}
+.nav-list li {
+  list-style: none;
+}
+.nav-list li a {
+  font-size: 1.3rem;
+  color: var(--white);
+  font-weight: 700;
+}
+.nav-list li a::after {
+  content: "";
+  display: block;
+  border-bottom: 0.1rem solid var(--black);
+  transform: scaleX(0);
+  transition: 0.2s linear;
+}
+.nav-list li a:hover {
+  color: var(--black);
+}
+.nav-list li a:hover::after {
+  transform: scaleX(0.8);
+}
+/* SEARCH FORM & AUTOCOMPLETE STYLES */
+.nav-list .search-form {
+  position: absolute;
+  top: 100%;
+  right: 20%;
+  background-color: transparent;
+  width: 30rem;
+  display: block;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: 0.3s;
+  z-index: 9999;
+  box-shadow: none;
+}
+.nav-list .search-form.active {
+  transform: scaleY(1);
+}
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 3.8rem;
+  background-color: var(--white);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.nav-list .search-form input {
+  flex-grow: 1;
+  height: 100%;
+  font-size: 1.6rem;
+  color: var(--black);
+  padding: 1rem;
+  background: none;
+  border: none;
+}
+
+.nav-list .search-form label {
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-right: 1.5rem;
+  color: var(--black);
+}
+.nav-list .search-form label:hover {
+  color: var(--blue);
+}
+/* Autocomplete List Container */
+#autocomplete-list {
+  width: 100%;
+  max-height: 12rem;
+  overflow-y: auto;
+  background-color: var(--white);
+  border: 1px solid #ddd;
+  border-top: none;
+  position: relative;
+  z-index: 999;
+  display: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 5px 5px;
+}
+/* Setiap item saran di autocomplete list */
+.autocomplete-item {
+  padding: 10px 1rem;
+  cursor: pointer;
+  background-color: var(--white);
+  border-bottom: 1px solid #eee;
+  color: var(--black);
+  font-size: 1.2rem;
+}
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+.autocomplete-item:hover {
+  background-color: #f1f1f1;
+}
+#hamburger-menu {
+  display: none;
+}
+.nav-extra {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 2rem;
+}
+.nav-extra a {
+  color: var(--white);
+  margin: 0 0.8rem;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+.nav-extra a:hover {
+  color: var(--black);
+}
+/* hero section */
+.hero {
+  color: var(--white);
+  display: flex;
+  background-image: url(../img/hero-bg.jpg);
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  mask-image: linear-gradient(rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0));
+}
+.hero .hero-content {
+  display: flex;
+  margin-top: 10rem;
+  margin-bottom: 10rem;
+  justify-content: space-between;
+  align-items: center;
+}
+.hero .hero-title {
+  justify-content: center;
+  flex-direction: column;
+}
+.hero .hero-title h1 {
+  width: 50rem;
+  font-size: 70px;
+  font-style: italic;
+  text-shadow: 2px 2px 4px var(--black);
+}
+.hero .hero-title h2 {
+  width: 30rem;
+  font-size: 30px;
+  font-style: italic;
+  text-shadow: 2px 2px 4px var(--black);
+}
+.hero .hero-img img {
+  width: 18rem;
+  border-radius: 10%;
+}
+
+/* about section */
+.about {
+  padding: 5rem 7% 1.4rem;
+  color: var(--white);
+  text-align: center;
+}
+
+.about h1 {
+  margin-top: 3rem;
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.about .about-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.about .about-container .about-img img {
+  width: 20rem;
+  border-radius: 50%;
+  align-items: center;
+}
+
+.about .about-container .about-content {
+  display: block;
+  text-align: left;
+}
+
+.about .about-container .about-content h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.about .about-container .about-content p {
+  font-size: 2rem;
+  width: 50rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+}
+
+.about .learning {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.about .learning h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 3rem;
+}
+
+.about .learning .learning-list {
+  display: flex;
+  justify-content: space-around;
+}
+
+.about .learning .learning-list ul {
+  text-align: left;
+  font-size: 1.8rem;
+}
+
+.about .learning .learning-list ul h6 {
+  font-size: 2.5rem;
+  font-weight: 500;
+}
+
+/* class section */
+.class {
+  padding: 5rem 7% 1.4rem;
+  color: var(--white);
+  text-align: center;
+}
+
+.class h1 {
+  margin-top: 3rem;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 3rem;
+}
+
+.class .class-card {
+  display: flex;
+  justify-content: center;
+  gap: 2.8rem;
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+.class .class-card .class-item.minimalist {
+  display: flex;
+  flex-direction: column;
+  width: 22rem;
+  border-radius: 12px;
+  background-color: rgb(0, 224, 254);
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: var(--black);
+  text-align: left;
+  padding: 0;
+  border: none;
+  position: relative;
+}
+
+.class .class-card .class-item.minimalist:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.class .class-card .class-item.minimalist .card-image-wrapper {
+  width: 100%;
+  height: 12rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url(../img/bg-class.png);
+  background-size: cover;
+  background-position: center;
+}
+
+.class .class-card .class-item.minimalist .card-image-wrapper img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px 12px 0 0;
+}
+
+.class .class-card .class-item.minimalist .card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 80%;
+  flex-grow: 1;
+}
+
+.class .class-card .class-item.minimalist .card-content h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.class .class-card .class-item.minimalist .card-content p {
+  font-size: 0.95rem;
+  color: #242424;
+}
+
+.class .class-card .class-item.minimalist .card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: var(--blue);
+  color: var(--white);
+  font-size: 0.9rem;
+  border-radius: 0 0 12px 12px;
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+}
+
+.class .class-card .class-item.minimalist .card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.class .class-card .class-item.minimalist .card-meta span i {
+  color: var(--white);
+  font-size: 1rem;
+}
+
+.class .class-card .class-item.minimalist .card-meta span .fa-star {
+  color: gold;
+}
+
+.class .class-card .class-item.minimalist::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-bottom: 60px solid var(--blue);
+  border-left: 60px solid transparent;
+  border-bottom-right-radius: 10px;
+}
+
+/* class_detail section */
+.class-detail-wrapper {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+  color: var(--white);
+  background-color: var(--black);
+  min-height: calc(100vh - 200px);
+}
+
+.sidebar-material {
+  flex: 0 0 250px;
+  background-color: var(--bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  position: sticky;
+  top: calc(var(--navbar-height, 120px) + 20px);
+}
+
+.sidebar-material h2 {
+  font-size: 1.8rem;
+  color: var(--blue);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.sidebar-material ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-material ul li {
+  margin-bottom: 0.8rem;
+}
+
+.sidebar-material ul li a {
+  display: block;
+  padding: 0.8rem 1rem;
+  background-color: transparent;
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1.3rem;
+}
+
+.sidebar-material ul li a:hover,
+.sidebar-material ul li a.active {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+/* Styling Umum */
+.class-content {
+  flex: 1;
+  background-color: var(--bg);
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.class-content h1 {
+  font-size: 3rem;
+  color: var(--blue);
+  margin-bottom: 1rem;
+}
+
+.class-content p.class-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #ddd;
+  margin-bottom: 2rem;
+}
+
+.class-content hr {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 3rem 0;
+}
+
+.class-content h2 {
+  font-size: 2.2rem;
+  color: var(--white);
+  margin-bottom: 2rem;
+}
+/* =============================== */
+/* --- MATERI LIST GRID LAYOUT --- */
+/* =============================== */
+
+/* Daftar Materi */
+.materials-list {
+  display: grid;
+  /* Grid Responsif: Akan membuat kolom dengan lebar min 500px, dan akan mengisi ruang yang tersisa (1fr). */
+  /* auto-fill akan membuat "kolom kosong" jika tidak ada cukup item untuk mengisi ruang. */
+  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  gap: 2rem;
+}
+
+/* Gaya untuk kasus hanya ada SATU item materi */
+/* Ini menggunakan kelas PHP yang ditambahkan saat hanya ada 1 materi */
+.materials-list.materials-list-single-item {
+  grid-template-columns: 1fr; /* Memaksa satu kolom penuh */
+  /* Anda bisa menambahkan justify-items: center; jika ingin item tunggal di tengah secara horizontal */
+  /* justify-items: center; */
+  gap: 0; /* Menghilangkan gap jika hanya ada satu item, opsional */
+}
+
+.material-item {
+  background-color: var(--black);
+  padding: 1.5rem; /* Padding di sekitar konten material */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
+  display: flex; /* Menggunakan flexbox untuk layout internal */
+  flex-direction: column; /* Konten diatur secara vertikal */
+  justify-content: space-between; /* Untuk mendorong download-link ke bawah */
+  overflow: hidden; /* Penting untuk radius border dan gambar */
+}
+
+.material-item h3 {
+  font-size: 1.5rem;
+  color: var(--blue);
+  margin-bottom: 0.8rem;
+}
+
+.material-item p.material-short-desc {
+  /* Menggunakan kelas spesifik untuk deskripsi pendek */
+  font-size: 1.3rem;
+  color: #bbb;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  width: 95%; /* Anda bisa mengatur ini ke auto atau 100% jika tidak ingin ada pemotongan */
+  /* Properti untuk ellipsis multi-baris */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  --webkit-line-clamp: 3;
+  --webkit-box-orient: vertical;
+  white-space: normal; /* Ini penting agar teks membungkus normal sebelum ellipsis */
+}
+
+/* Tautan Download */
+.material-item .download-link {
+  display: inline-block;
+  background-color: var(--blue);
+  color: var(--white);
+  padding: 0.7rem 1.2rem;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-top: auto; /* Mendorong ke bawah jika item material adalah flex container */
+  align-self: flex-start; /* Sejajakan ke kiri jika flex item */
+  transition: background-color 0.3s ease;
+}
+
+.material-item .download-link:hover {
+  background-color: #2a33bf;
+}
+
+/* Embed Video (Jika ada, meskipun kita pakai thumbnail) */
+.material-item .video-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* Rasio aspek 16:9 */
+  height: 0;
+  overflow: hidden;
+  margin-top: 1rem; /* Spasi di atas embed video asli */
+}
+
+.material-item .video-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+/* --- KODE UNTUK THUMBNAIL --- */
+
+/* Gaya umum untuk wadah thumbnail */
+.video-embed-thumbnail,
+.material-file-thumbnail {
+  position: relative;
+  width: 100%;
+  height: 100%; /* Tinggi tetap untuk konsistensi */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  flex-shrink: 0; /* Mencegah thumbnail menyusut */
+}
+
+/* Gambar Thumbnail YouTube dan Gambar File Eksternal */
+.video-embed-thumbnail img.youtube-thumbnail,
+.material-file-thumbnail img.file-image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Memastikan gambar mengisi area tanpa terdistorsi */
+  display: block;
+}
+
+/* Ikon Play untuk Video */
+.video-embed-thumbnail .play-icon {
+  position: absolute;
+  font-size: 5rem; /* Ukuran ikon play yang besar */
+  color: rgba(255, 255, 255, 0.9); /* Sedikit transparan putih */
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.7); /* Bayangan untuk visibilitas */
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Efek Hover pada Material Item untuk Ikon Play */
+.material-item-link:hover .video-embed-thumbnail .play-icon {
+  transform: scale(1.1); /* Sedikit membesar saat hover */
+}
+
+/* Ikon untuk File (PDF, Word, dll.) */
+.material-file-thumbnail .file-thumbnail-icon {
+  font-size: 6rem; /* Ukuran ikon file yang besar */
+  color: var(--blue); /* Warna ikon file, sesuai dengan tema Anda */
+  margin-bottom: 10px; /* Spasi di bawah ikon */
+}
+
+.material-file-thumbnail span {
+  color: #eee; /* Warna teks untuk jenis file */
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Styling untuk materi PDF (jika Anda ingin perbedaan visual, contoh: border) */
+.material-pdf-card {
+  border-color: var(--blue); /* Contoh border yang berbeda untuk PDF */
+}
+
+/* Pesan Tidak Ada Materi */
+p.no-materials {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #aaa;
+  padding: 2rem;
+  background-color: #222;
+  border-radius: 8px;
+  margin-top: 2rem; /* Tambahkan sedikit spasi dari elemen di atasnya */
+}
+/* contact */
+.contact {
+  padding: 5rem 7% 1.4rem;
+  color: var(--white);
+  text-align: center;
+}
+
+.contact h1 {
+  margin-top: 3rem;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.contact .row {
+  display: flex;
+  margin-top: 2rem;
+  background-color: var(--bg);
+}
+
+.contact .row .map {
+  flex: 1 1 45rem;
+  width: 100%;
+  object-fit: cover;
+}
+
+.contact .row form {
+  flex: 1 1 45rem;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.contact .row form .input-group {
+  display: flex;
+  align-items: center;
+  margin-top: 2rem;
+  background-color: var(--bg);
+  border: 1px solid #eee;
+}
+
+.contact .row form .input-group i {
+  color: var(--white);
+  font-size: 1.8rem;
+  padding: 2rem;
+}
+
+.contact .row form .input-group input,
+.contact .row form .input-group textarea {
+  width: 100%;
+  padding: 2rem;
+  font-size: 1.7rem;
+  background: none;
+  color: var(--white);
+}
+
+.contact .row form .input-group textarea {
+  height: 12rem;
+}
+
+.contact .row form .btn {
+  margin-top: 3rem;
+  display: inline-block;
+  padding: 1rem 3rem;
+  font-size: 1.7rem;
+  color: var(--white);
+  background-color: var(--blue);
+  cursor: pointer;
+}
+
+.contact .row form .btn.disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.contact .row .btn .send {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+/* footer */
+footer {
+  background-color: var(--blue);
+  text-align: center;
+  padding: 1rem 0 3rem;
+  margin-top: 3rem;
+}
+
+footer .socials {
+  padding: 1rem 0;
+}
+
+footer .socials a {
+  color: var(--white);
+  margin: 1rem;
+  font-size: 1.5rem;
+}
+
+footer .socials a:hover {
+  color: var(--black);
+}
+
+footer .nav li {
+  list-style-type: none;
+}
+
+footer .nav {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+footer .nav a {
+  color: var(--white);
+  padding: 0.7rem 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+footer .nav a:hover {
+  color: var(--black);
+}
+
+footer .credits {
+  font-size: 1rem;
+  color: var(--white);
+  font-weight: 500;
+}
+
+footer .credits a {
+  color: var(--white);
+  font-weight: 500;
+}
+
+/* media query */
+@media only screen and (max-width: 1336px) {
+  html {
+    font-size: 75%;
+  }
+}
+
+@media only screen and (max-width: 830px) {
+  html {
+    font-size: 70%;
+  }
+
+  .hero .hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero .hero-title h1 {
+    font-size: 4.5rem;
+    text-align: center;
+  }
+
+  .hero .hero-title h2 {
+    font-size: 2.8rem;
+    text-align: center;
+    margin-bottom: 1.3rem;
+    margin: 1.5rem auto 1.5rem;
+  }
+
+  .about .about-container {
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 15px;
+  }
+
+  .about-container .about-content h1 {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  html {
+    font-size: 62.5%;
+  }
+
+  .navbar-container {
+    height: 150px;
+    z-index: 99999;
+  }
+
+  .navbar-container .title h1 {
+    font-size: 3rem;
+  }
+
+  .navbar-container .title p {
+    font-size: 2rem;
+  }
+
+  .logo img {
+    width: 80px;
+  }
+
+  .nav-list .nav {
+    position: absolute;
+    top: 100%;
+    background-color: var(--blue);
+    width: 100%;
+    opacity: 0;
+    flex-direction: column;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: all 0.5s ease-in-out;
+    align-items: center;
+    justify-content: center;
+    border-top: 0.5px solid var(--black);
+  }
+
+  .nav-list .nav.active {
+    top: 100%;
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  .nav-list .nav li {
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav-list .nav a {
+    color: var(--white);
+    display: block;
+    margin: 1rem;
+    font-size: 1.8rem;
+  }
+
+  .nav-extra {
+    margin-left: auto;
+  }
+
+  .nav-extra a {
+    color: var(--white);
+    margin: 0 1rem;
+    font-weight: 500;
+    font-size: 2.3rem;
+  }
+
+  #hamburger-menu {
+    display: inline-block;
+  }
+
+  /* Responsive Search Form */
+  .nav-list .search-form {
+    width: 90%;
+    right: 5%;
+    left: 5%;
+  }
+
+  .nav-list .search-form label {
+    font-size: 1.8rem;
+  }
+
+  /* hero */
+  .hero {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero .hero-content {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    vertical-align: top;
+  }
+
+  .hero .hero-title h1 {
+    font-size: 4.5rem;
+    text-align: center;
+    font-style: normal;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero .hero-title h2 {
+    font-size: 2.8rem;
+    font-style: normal;
+    width: 50rem;
+    text-align: center;
+    margin-bottom: 1.3rem;
+  }
+
+  /* about */
+  .about .about-container {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .about-container .about-img {
+    width: 18rem;
+    margin-top: 4.5rem;
+  }
+
+  .about-container .about-content {
+    text-align: center;
+  }
+
+  .about-container .about-content h1 {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .about-container .about-content p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .class .class-card .class-item.minimalist {
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+  }
+
+  .class .class-card .class-item.minimalist .card-image-wrapper {
+    width: 100%;
+    height: 15rem;
+  }
+
+  .class .class-card .class-item.minimalist::after {
+    border-bottom: 40px solid var(--blue);
+    border-left: 40px solid transparent;
+  }
+
+  .class-content {
+    padding: 1.5rem;
+  }
+
+  .class-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .class-content h2 {
+    font-size: 1.8rem;
+  }
+
+  .materials-list {
+    grid-template-columns: 1fr; /* Satu kolom di layar kecil */
+  }
+
+  .contact .row {
+    flex-wrap: wrap;
+  }
+
+  .contact .row .map {
+    height: 30rem;
+  }
+
+  .contact .row form {
+    padding-top: 0;
+  }
+
+  .contact .row form .input-group input,
+  .contact .row form .input-group textarea {
+    font-size: 2rem;
+  }
+
+  footer .socials a {
+    font-size: 1.8rem;
+  }
+
+  footer .nav a {
+    font-size: 1.5rem;
+  }
+
+  footer .credits {
+    font-size: 1.3rem;
+  }
+}
+
+/* mobile phone */
+@media only screen and (max-width: 650px) {
+  html {
+    font-size: 55%;
+  }
+
+  .about-container .about-content p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .about .learning .learning-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .about .learning .learning-list li {
+    width: 23rem;
+  }
+
+  /* Responsive Search Form */
+  .nav-list .search-form {
+    width: 95%;
+    right: 2.5%;
+    left: 2.5%;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  html {
+    font-size: 45%;
+  }
+
+  .navbar-container {
+    height: 105px;
+  }
+
+  .logo img {
+    width: 65px;
+    box-shadow: 1px 1px 3px var(--black);
+  }
+}
+
+/* Media Queries untuk Responsivitas */
+@media (max-width: 1024px) {
+  .class-detail-wrapper {
+    flex-direction: column;
+    padding: 3rem 5% 2rem;
+    gap: 2rem;
+  }
+
+  .sidebar-material {
+    width: 100%;
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .class-detail-wrapper {
+    padding: 2rem 3% 1rem;
+  }
+
+  .class-content {
+    padding: 1.5rem;
+  }
+
+  .class-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .class-content h2 {
+    font-size: 1.8rem;
+  }
+
+  .material-item h3 {
+    font-size: 1.3rem;
+  }
+
+  .material-item p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .class-content h1 {
+    font-size: 2rem;
+  }
+
+  .class-content h2 {
+    font-size: 1.6rem;
+  }
+
+  .materials-list {
+    grid-template-columns: 1fr;
+  }
+}

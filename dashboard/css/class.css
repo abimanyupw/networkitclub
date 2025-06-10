@@ -1,0 +1,156 @@
+:root {
+  --blue: #2a33bf;
+  --white: #ffffff;
+  --black: #000000;
+  --bg: #121212;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: Arial, sans-serif;
+  text-decoration: none;
+}
+/* class section */
+.class {
+  color: var(--white);
+}
+
+.class h1 {
+  margin-top: 3rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 3rem;
+}
+
+.class .class-card {
+  display: flex;
+  justify-content: center;
+  gap: 2.8rem;
+  padding: 2rem;
+  flex-wrap: wrap;
+  text-decoration: none;
+}
+
+.class .class-card .class-item.minimalist {
+  display: flex;
+  flex-direction: column;
+  width: 22rem;
+  border-radius: 12px;
+  background-color: rgb(0, 224, 254);
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: var(--black);
+  text-align: left;
+  padding: 0;
+  border: none;
+  position: relative;
+}
+
+.class .class-card .class-item.minimalist:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.class .class-card .class-item.minimalist .card-image-wrapper {
+  width: 100%;
+  height: 12rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.class .class-card .class-item.minimalist .card-image-wrapper img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px 12px 0 0;
+}
+
+.class .class-card .class-item.minimalist .card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 80%;
+  flex-grow: 1;
+}
+
+.class .class-card .class-item.minimalist .card-content h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.class .class-card .class-item.minimalist .card-content p {
+  font-size: 0.95rem;
+  color: #242424;
+}
+
+.class .class-card .class-item.minimalist .card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: var(--blue);
+  color: var(--white);
+  font-size: 0.9rem;
+  border-radius: 0 0 12px 12px;
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+}
+
+.class .class-card .class-item.minimalist .card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.class .class-card .class-item.minimalist .card-meta span i {
+  color: var(--white);
+  font-size: 1rem;
+}
+
+.class .class-card .class-item.minimalist .card-meta span .fa-star {
+  color: gold;
+}
+
+.class .class-card .class-item.minimalist::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-bottom: 60px solid var(--blue);
+  border-left: 60px solid transparent;
+  border-bottom-right-radius: 10px;
+}
+@media screen and (max-width: 768px) {
+  .class .class-card .class-item.minimalist {
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+  }
+
+  .class .class-card .class-item.minimalist .card-image-wrapper {
+    width: 100%;
+    height: 15rem;
+  }
+
+  .class .class-card .class-item.minimalist::after {
+    border-bottom: 40px solid var(--blue);
+    border-left: 40px solid transparent;
+  }
+  .class .class-card .class-item.minimalist .card-content {
+    width: 100%;
+  }
+}

@@ -1,0 +1,122 @@
+/* material_detail.css */
+
+.material-detail-wrapper {
+  width: 100%;
+  margin: 40px 10px;
+  background-color: #1e1e2f;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  color: #f0f0f0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.material-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.breadcrumbs {
+  font-size: 1.5rem;
+  color: #a0a0b0;
+  font-weight: bold;
+}
+
+.breadcrumbs a {
+  color: #63a4ff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumbs a:hover {
+  color: #88c0f7;
+}
+
+.back button:hover {
+  background-color: #2563eb;
+}
+
+h1 {
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+  color: #fefefe;
+}
+
+.category-info {
+  font-size: 1.5rem;
+  color: #94a3b8;
+}
+
+.category-info span {
+  font-weight: 600;
+  color: #60a5fa;
+}
+
+.material-full-content {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #d1d5db;
+  white-space: pre-wrap;
+}
+
+.video-embed-full {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(99, 164, 255, 0.4);
+}
+
+.video-embed-full iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+.download-link-full {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 25px;
+  padding: 12px 20px;
+  background-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.download-link-full:hover {
+  background-color: #1e40af;
+  box-shadow: 0 6px 18px rgba(30, 64, 175, 0.7);
+}
+
+.download-link-full i {
+  font-size: 1.3rem;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  .material-detail-wrapper {
+    padding: 15px;
+    margin: 20px 10px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .download-link-full {
+    width: 100%;
+    justify-content: center;
+  }
+}

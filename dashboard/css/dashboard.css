@@ -1,0 +1,376 @@
+:root {
+  --sidebar-width: 280px;
+  --navbar-height: 56px;
+  --footer-height: 60px; /* Opsional, jika footer punya tinggi tetap */
+  --header-bg: #2b3e50;
+  --sidebar-bg: #212529;
+  --main-content-bg: #1a1c20;
+  --text-color: #ffffff;
+  --accent-color: #007bff;
+  --muted-text: #adb5bd;
+
+  /* New/Adjusted Variables for Responsiveness */
+  --navbar-brand-desktop-size: 2rem;
+  --navbar-brand-tablet-size: 1.5rem; /* New */
+  --navbar-brand-mobile-size: 1.25rem; /* Adjusted from 2.5rem */
+
+  --profile-name-desktop-size: 1.1rem;
+  --profile-name-tablet-size: 1rem; /* New */
+  --profile-name-mobile-size: 0.9rem; /* Adjusted from 2rem */
+
+  --profile-role-desktop-size: 0.9rem;
+  --profile-role-tablet-size: 0.8rem; /* New */
+  --profile-role-mobile-size: 0.7rem; /* Adjusted from 1.8rem */
+
+  --sidebar-heading-desktop-size: 0.85rem;
+  --sidebar-heading-tablet-size: 0.75rem; /* New */
+  --sidebar-heading-mobile-size: 0.65rem; /* Adjusted from 1.8rem */
+
+  --list-item-desktop-size: 1rem; /* Added for clarity */
+  --list-item-tablet-size: 0.9rem; /* New */
+  --list-item-mobile-size: 0.8rem; /* Adjusted from 1.8rem */
+
+  --card-icon-desktop-size: 5rem;
+  --card-icon-mobile-size: 4.5rem; /* New */
+}
+
+/* 1. Body sebagai kontainer utama Flexbox vertikal */
+body {
+  background-color: var(--main-content-bg);
+  color: var(--text-color);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  min-height: 100vh; /* Pastikan body setidaknya setinggi viewport */
+  display: flex;
+  flex-direction: column; /* Item body (navbar, main layout, footer) akan ditumpuk vertikal */
+}
+
+/* 2. Navbar tetap fixed di atas */
+.navbar-top-dashboard {
+  height: var(--navbar-height);
+  background-color: var(--header-bg) !important;
+  color: var(--text-color);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+}
+
+.navbar-top-dashboard .navbar-brand {
+  color: var(--text-color) !important;
+  font-weight: bold;
+  font-size: var(--navbar-brand-desktop-size); /* Use variable */
+}
+
+.navbar-top-dashboard .navbar-brand span {
+  color: var(--accent-color);
+}
+
+.navbar-top-dashboard .navbar-text {
+  color: var(--text-color);
+}
+
+.navbar-top-dashboard .btn-outline-light:hover {
+  background-color: var(--text-color);
+  color: var(--header-bg);
+}
+
+/* 3. Dashboard Container - Kontainer untuk sidebar dan main content */
+.dashboard-container {
+  display: flex; /* Mengatur sidebar dan main-content berdampingan */
+  flex-wrap: nowrap; /* Mencegah item flex wrap ke baris baru */
+  flex-grow: 1; /* PENTING: Membuat dashboard-container tumbuh mengisi sisa ruang vertikal setelah navbar dan sebelum footer */
+  padding-top: var(
+    --navbar-height
+  ); /* Memberikan ruang agar konten tidak tertutup navbar fixed */
+}
+
+/* Card Icon */
+.card-body {
+  position: relative; /* Ini sangat penting! */
+  padding: 1.25rem; /* Pastikan padding cukup agar ikon tidak keluar */
+}
+
+.card-icon {
+  font-size: var(--card-icon-desktop-size); /* Atau ukuran yang Anda inginkan */
+  position: absolute;
+  right: 1.25rem; /* Sesuaikan dengan padding card-body */
+  top: 50%; /* Posisikan di tengah vertikal */
+  transform: translateY(
+    -50%
+  ); /* Geser ke atas setengah tinggi ikon agar benar-benar di tengah */
+  opacity: 0.3;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.card:hover .card-icon {
+  opacity: 0.4;
+}
+
+/* 4. Sidebar - Posisi Fixed di samping */
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width); /* Pastikan lebarnya minimum segini */
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
+  overflow-y: auto; /* Memungkinkan sidebar untuk di-scroll jika isinya panjang */
+  padding-bottom: 1rem;
+  position: fixed; /* Sidebar fixed */
+  top: var(--navbar-height); /* Mulai dari bawah navbar */
+  bottom: 0; /* Menempel hingga bagian bawah viewport */
+  left: 0; /* Menempel di kiri */
+  z-index: 1020; /* Penting: agar sidebar tidak tertutup oleh main-content */
+  transition: transform 0.3s ease;
+}
+
+.sidebar-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.profile-avatar {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background-color: #555;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  color: #ddd;
+  margin-bottom: 0.8rem;
+  border: 2px solid var(--accent-color);
+}
+
+.profile-name {
+  font-weight: bold;
+  font-size: var(--profile-name-desktop-size); /* Use variable */
+}
+
+.profile-role {
+  font-size: var(--profile-role-desktop-size); /* Use variable */
+  color: var(--muted-text);
+  padding: 0.2rem 0.6rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.sidebar .list-group-item {
+  background-color: transparent;
+  color: var(--muted-text);
+  border: none;
+  border-radius: 5px;
+  padding: 0.8rem 1.5rem;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--list-item-desktop-size); /* Use variable */
+}
+
+.sidebar .list-group-item:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-color);
+}
+
+.sidebar .list-group-item.active {
+  background-color: var(--accent-color) !important;
+  color: var(--text-color) !important;
+  font-weight: bold;
+}
+
+.sidebar-heading {
+  color: var(--muted-text);
+  font-size: var(--sidebar-heading-desktop-size); /* Use variable */
+  text-transform: uppercase;
+  padding: 1rem 1.5rem 0.5rem;
+  font-weight: bold;
+}
+
+/* 5. Main Content - Flex container vertikal untuk konten halaman dan footer */
+.main-content {
+  flex-grow: 1; /* Mengambil sisa ruang horizontal dari dashboard-container */
+  margin-left: var(
+    --sidebar-width
+  ); /* Geser main-content ke kanan agar tidak tertutup sidebar */
+  background-color: var(--main-content-bg);
+  display: flex; /* Aktifkan Flexbox */
+  flex-direction: column; /* Item di dalamnya (page-content-area, footer) akan ditumpuk vertikal */
+  min-height: calc(
+    100vh - var(--navbar-height)
+  ); /* Tinggi minimal, dari bawah navbar hingga bawah viewport */
+  position: relative; /* Penting untuk mengatur posisi footer */
+}
+
+/* Page content area (add this if you don't have it, or ensure padding here) */
+.page-content-area {
+  flex-grow: 1; /* Allow content to grow */
+}
+
+/* 7. Dashboard Footer - Di dalam main-content */
+.dashboard-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted-text);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(
+    --header-bg
+  ); /* Berikan warna latar belakang agar terlihat jelas */
+  flex-shrink: 0; /* Mencegah footer menyusut */
+  margin-top: auto; /* PENTING: Mendorong footer ke bagian paling bawah dari main-content */
+  padding: 1rem; /* Added padding to footer */
+}
+
+.dashboard-footer a {
+  color: var(--accent-color);
+}
+
+/* 8. Media Queries untuk Responsif */
+
+/* For Tablets (e.g., up to 991.98px for Bootstrap's lg breakpoint) */
+@media (max-width: 991.98px) {
+  .navbar-top-dashboard .navbar-brand {
+    font-size: var(--navbar-brand-tablet-size);
+  }
+  .navbar-top-dashboard .navbar-text {
+    display: none !important; /* Hide long text on tablet */
+  }
+
+  .sidebar {
+    /* Keep sidebar hidden by default on tablet/mobile */
+    transform: translateX(-100%);
+    width: var(
+      --sidebar-width
+    ); /* Can maintain a fixed width or go full width */
+    height: calc(100% - var(--navbar-height));
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    z-index: 1040;
+    background-color: var(--sidebar-bg);
+    overflow-y: auto;
+    padding: 1rem;
+  }
+
+  /* Adjust sidebar elements for tablet */
+  .profile-name {
+    font-size: var(--profile-name-tablet-size);
+  }
+  .profile-role {
+    font-size: var(--profile-role-tablet-size);
+  }
+  .sidebar-heading {
+    font-size: var(--sidebar-heading-tablet-size);
+    padding: 0.8rem 1rem 0.4rem; /* Adjusted padding */
+  }
+  .sidebar .list-group-item {
+    padding: 0.7rem 1rem;
+    font-size: var(--list-item-tablet-size);
+  }
+
+  .main-content {
+    margin-left: 0; /* Sidebar is overlay, so no margin needed */
+    min-height: calc(100vh - var(--navbar-height));
+  }
+
+  .page-content-area {
+    padding: 1rem; /* Slightly less padding for tablet */
+  }
+
+  .card-icon {
+    font-size: var(
+      --card-icon-mobile-size
+    ); /* Smaller icon size for smaller screens */
+  }
+  .dashboard-footer {
+    font-size: 0.8rem; /* Smaller footer text for tablet */
+    margin-top: auto; /* Ensure footer stays at the bottom */
+  }
+}
+
+/* For Mobiles (e.g., up to 767.98px for Bootstrap's md breakpoint) */
+@media (max-width: 767.98px) {
+  .navbar-top-dashboard .navbar-brand {
+    font-size: var(--navbar-brand-mobile-size);
+  }
+
+  #sidebarToggle {
+    font-size: 1.3rem; /* Make toggle icon a bit smaller for mobile */
+    margin: auto 0; /* Center the toggle icon vertically */
+  }
+
+  .sidebar {
+    /* Full width for mobile overlay */
+    width: 100%;
+    padding: 0.5rem; /* Less padding for mobile */
+  }
+
+  /* Further adjust sidebar elements for mobile */
+  .profile-avatar {
+    width: 70px; /* Smaller avatar */
+    height: 70px;
+    font-size: 2rem;
+  }
+  .profile-name {
+    font-size: var(--profile-name-mobile-size);
+  }
+  .profile-role {
+    font-size: var(--profile-role-mobile-size);
+  }
+  .sidebar-heading {
+    font-size: var(--sidebar-heading-mobile-size);
+    padding: 0.5rem 0.5rem 0.25rem; /* Minimal padding */
+  }
+  .sidebar .list-group-item {
+    padding: 0.5rem 0.75rem;
+    font-size: var(--list-item-mobile-size);
+  }
+
+  .page-content-area {
+    padding: 0.75rem; /* Even less padding for mobile */
+  }
+
+  .card-icon {
+    font-size: var(
+      --card-icon-mobile-size
+    ); /* Keep consistent small icon size */
+    right: 10px; /* Move closer to edge */
+  }
+  .card-body .h5 {
+    font-size: 1.25rem; /* Make card numbers slightly smaller */
+  }
+  .card-body .text-xs {
+    font-size: 0.7rem; /* Make card subtitles slightly smaller */
+  }
+  .dashboard-footer {
+    font-size: 0.7rem; /* Smaller footer text for mobile */
+  }
+}
+
+/* Optional: For very small screens (e.g., phones in landscape or very small devices) */
+@media (max-width: 575.98px) {
+  .navbar-top-dashboard .navbar-brand {
+    font-size: 1rem; /* Even smaller brand */
+  }
+  #sidebarToggle {
+    font-size: 1.2rem;
+    margin: auto 0; /* Minimal margin */
+  }
+  .page-content-area {
+    padding: 0.5rem; /* Minimal padding */
+  }
+  .dashboard-footer {
+    font-size: 0.6rem; /* Very small footer text */
+  }
+}
+
+/* Utility classes for toggling sidebar */
+.sidebar.sidebar-open {
+  transform: translateX(0); /* Tampilkan sidebar saat toggle aktif */
+}

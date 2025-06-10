@@ -1,0 +1,305 @@
+/* class_detail section */
+.class-detail-wrapper {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+  color: var(--white);
+  background-color: var(--black);
+  min-height: calc(100vh - 200px);
+}
+
+.sidebar-material {
+  flex: 0 0 250px;
+  background-color: var(--bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  position: sticky;
+  top: calc(var(--navbar-height, 120px) + 20px);
+}
+
+.sidebar-material h2 {
+  font-size: 1.8rem;
+  color: var(--blue);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.sidebar-material ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-material ul li {
+  margin-bottom: 0.8rem;
+}
+
+.sidebar-material ul li a {
+  display: block;
+  padding: 0.8rem 1rem;
+  background-color: transparent;
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1.3rem;
+}
+
+.sidebar-material ul li a:hover,
+.sidebar-material ul li a.active {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+/* Styling Umum */
+.class-content {
+  flex: 1;
+  background-color: var(--bg);
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.class-content h1 {
+  font-size: 3rem;
+  color: var(--blue);
+  margin-bottom: 1rem;
+}
+
+.class-content p.class-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #ddd;
+  margin-bottom: 2rem;
+}
+
+.class-content hr {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 3rem 0;
+}
+
+.class-content h2 {
+  font-size: 2.2rem;
+  color: var(--white);
+  margin-bottom: 2rem;
+}
+/* =============================== */
+/* --- MATERI LIST GRID LAYOUT --- */
+/* =============================== */
+
+/* Daftar Materi */
+.materials-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 2rem;
+}
+
+/* Gaya untuk kasus hanya ada SATU item materi */
+/* Ini menggunakan kelas PHP yang ditambahkan saat hanya ada 1 materi */
+.materials-list.materials-list-single-item {
+  grid-template-columns: 1fr; /* Memaksa satu kolom penuh */
+  /* Anda bisa menambahkan justify-items: center; jika ingin item tunggal di tengah secara horizontal */
+  /* justify-items: center; */
+  gap: 0; /* Menghilangkan gap jika hanya ada satu item, opsional */
+}
+
+.material-item {
+  background-color: var(--black);
+  padding: 1.5rem; /* Padding di sekitar konten material */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
+  display: flex; /* Menggunakan flexbox untuk layout internal */
+  flex-direction: column; /* Konten diatur secara vertikal */
+  justify-content: space-between; /* Untuk mendorong download-link ke bawah */
+  overflow: hidden; /* Penting untuk radius border dan gambar */
+}
+
+.material-item h3 {
+  font-size: 1.5rem;
+  color: var(--blue);
+  margin-bottom: 0.8rem;
+}
+
+.material-item p.material-short-desc {
+  /* Menggunakan kelas spesifik untuk deskripsi pendek */
+  font-size: 1.3rem;
+  color: #bbb;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  width: 95%; /* Anda bisa mengatur ini ke auto atau 100% jika tidak ingin ada pemotongan */
+  /* Properti untuk ellipsis multi-baris */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  --webkit-line-clamp: 3;
+  --webkit-box-orient: vertical;
+  white-space: normal; /* Ini penting agar teks membungkus normal sebelum ellipsis */
+}
+
+/* Tautan Download */
+.material-item .download-link {
+  display: inline-block;
+  background-color: var(--blue);
+  color: var(--white);
+  padding: 0.7rem 1.2rem;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-top: auto; /* Mendorong ke bawah jika item material adalah flex container */
+  align-self: flex-start; /* Sejajakan ke kiri jika flex item */
+  transition: background-color 0.3s ease;
+}
+
+.material-item .download-link:hover {
+  background-color: #2a33bf;
+}
+
+/* Embed Video (Jika ada, meskipun kita pakai thumbnail) */
+.material-item .video-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* Rasio aspek 16:9 */
+  height: 0;
+  overflow: hidden;
+  margin-top: 1rem; /* Spasi di atas embed video asli */
+}
+
+.material-item .video-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+/* --- KODE UNTUK THUMBNAIL --- */
+
+/* Gaya umum untuk wadah thumbnail */
+.video-embed-thumbnail,
+.material-file-thumbnail {
+  position: relative;
+  width: 100%;
+  height: 100%; /* Tinggi tetap untuk konsistensi */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  flex-shrink: 0; /* Mencegah thumbnail menyusut */
+}
+
+/* Gambar Thumbnail YouTube dan Gambar File Eksternal */
+.video-embed-thumbnail img.youtube-thumbnail,
+.material-file-thumbnail img.file-image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Memastikan gambar mengisi area tanpa terdistorsi */
+  display: block;
+}
+
+/* Ikon Play untuk Video */
+.video-embed-thumbnail .play-icon {
+  position: absolute;
+  font-size: 5rem; /* Ukuran ikon play yang besar */
+  color: rgba(255, 255, 255, 0.9); /* Sedikit transparan putih */
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.7); /* Bayangan untuk visibilitas */
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Efek Hover pada Material Item untuk Ikon Play */
+.material-item-link:hover .video-embed-thumbnail .play-icon {
+  transform: scale(1.1); /* Sedikit membesar saat hover */
+}
+
+/* Ikon untuk File (PDF, Word, dll.) */
+.material-file-thumbnail .file-thumbnail-icon {
+  font-size: 6rem; /* Ukuran ikon file yang besar */
+  color: var(--blue); /* Warna ikon file, sesuai dengan tema Anda */
+  margin-bottom: 10px; /* Spasi di bawah ikon */
+}
+
+.material-file-thumbnail span {
+  color: #eee; /* Warna teks untuk jenis file */
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Styling untuk materi PDF (jika Anda ingin perbedaan visual, contoh: border) */
+.material-pdf-card {
+  border-color: var(--blue); /* Contoh border yang berbeda untuk PDF */
+}
+
+/* Pesan Tidak Ada Materi */
+p.no-materials {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #aaa;
+  padding: 2rem;
+  background-color: #222;
+  border-radius: 8px;
+  margin-top: 2rem; /* Tambahkan sedikit spasi dari elemen di atasnya */
+}
+@media screen and (max-width: 768px) {
+  .class-detail-wrapper {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .sidebar-material {
+    position: static; /* Menghilangkan sticky pada sidebar di mobile */
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .class-content {
+    padding: 1.5rem;
+  }
+
+  .materials-list {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(100%, 1fr)
+    ); /* Satu kolom penuh di mobile */
+  }
+  .class-detail-wrapper {
+    padding: 2rem 3% 1rem;
+  }
+
+  .class-content {
+    padding: 1.5rem;
+  }
+
+  .class-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .class-content h2 {
+    font-size: 1.8rem;
+  }
+
+  .material-item h3 {
+    font-size: 1.3rem;
+  }
+
+  .material-item p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .class-content h1 {
+    font-size: 2rem;
+  }
+
+  .class-content h2 {
+    font-size: 1.6rem;
+  }
+
+  .materials-list {
+    grid-template-columns: 1fr;
+  }
+}
