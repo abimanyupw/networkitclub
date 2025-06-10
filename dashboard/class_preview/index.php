@@ -60,6 +60,7 @@ require_once '../dashboard_header.php';
                 ?>
             </div>
         </div>
+</div>
 
 <?php
 $koneksi->close();
