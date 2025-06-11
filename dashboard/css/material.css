@@ -1,8 +1,8 @@
 /* material_detail.css */
 
 .material-detail-wrapper {
-  width: 100%;
-  margin: 40px 10px;
+  max-width: 1500px;
+  margin: 10px auto;
   background-color: #1e1e2f;
   border-radius: 10px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
