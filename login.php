@@ -5,15 +5,24 @@ session_start(); // Mulai session untuk menyimpan data pengguna setelah login
 // Sertakan file koneksi database. Pastikan path-nya benar.
 include 'includes/inc_koneksi.php';
 
-$error_message = ''; // Variabel untuk menyimpan pesan error login
-$success_message = ''; // Variabel baru untuk pesan sukses atau informasi (misal: "Anda telah logout")
+$error_message = '';   // Variabel untuk menyimpan pesan error yang akan ditampilkan di HTML
+$success_message = ''; // Variabel untuk pesan sukses atau informasi
+
+// --- PENANGANAN PESAN DARI URL (Misal: setelah logout otomatis) ---
+// Pesan dari GET hanya diproses jika tidak ada pengiriman form POST
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['msg'])) {
+    if ($_GET['msg'] == 'logged_out') {
+        $error_message = "Sesi Anda telah berakhir. Silakan login kembali.";
+    }
+    // Tambahkan penanganan untuk pesan 'msg' lainnya jika diperlukan
+}
 
 // Konfigurasi Batasan Percobaan Login
 $max_attempts = 5; // Jumlah maksimal percobaan login yang gagal
 $lockout_time = 15 * 60; // Waktu lockout dalam detik (15 menit)
 
-// Waktu idle untuk auto-logout (5 menit)
-$idle_timeout = 5 * 60; // 5 menit dalam detik
+// Waktu idle untuk auto-logout (5 menit), ini hanya untuk informasi di sini
+$idle_timeout = 5 * 60; 
 
 // Fungsi untuk mendapatkan IP address pengguna
 function get_client_ip() {
@@ -37,195 +46,186 @@ function get_client_ip() {
 
 $client_ip = get_client_ip();
 
-// Cek jika user sudah login (berdasarkan session di browser saat ini), langsung redirect ke dashboard masing-masing
+// --- Cek Jika User Sudah Login (Berdasarkan Session PHP) ---
 if (isset($_SESSION['user_id'])) {
-    // Update waktu aktivitas terakhir setiap kali halaman diakses (kecuali halaman login sendiri)
-    // Ini penting untuk menjaga sesi tetap hidup selama pengguna aktif.
+    // Update waktu aktivitas terakhir untuk menjaga sesi tetap hidup
     $_SESSION['last_activity'] = time();
 
-    // Redirect sesuai peran
+    // Redirect langsung sesuai peran pengguna
     switch ($_SESSION['role']) {
         case 'admin':
             header('Location: dashboard/admin/index.php');
-            break;
+            exit(); // Hentikan eksekusi setelah redirect
         case 'developer':
             header('Location: dashboard/developer/index.php');
-            break;
+            exit();
         case 'teknisi':
             header('Location: dashboard/teknisi/index.php');
-            break;
-        case 'siswa': // Menggunakan 'student' bukan 'siswa' konsisten dengan kode sebelumnya. Jika di DB 'siswa', sesuaikan.
+            exit();
+        case 'siswa':
             header('Location: dashboard/siswa/index.php');
-            break;
+            exit();
         default:
-            // Handle unknown role, perhaps destroy session and redirect to login
+            // Jika peran tidak dikenali, hancurkan sesi untuk keamanan dan tampilkan error
             session_unset();
             session_destroy();
-            header('Location: login.php?msg=invalid_role');
-            break;
+            $error_message = "Peran pengguna tidak dikenal atau tidak valid. Silakan login kembali."; 
+            // Tidak ada redirect di sini; biarkan script lanjut ke HTML untuk menampilkan pesan error.
+            break; 
     }
-    exit();
 }
 
-// Tangkap pesan dari URL (misal dari logout.php) HANYA JIKA TIDAK ADA POST DATA
-// Ini penting untuk mencegah pesan logout menimpa pesan error login POST
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['msg'])) {
-    if ($_GET['msg'] == 'logged_out') {
-        $error_message = "Sesi Anda telah berakhir. Silakan login kembali.";
-    }
-    // Anda bisa tambahkan pesan lain di sini jika ada msg= lainnya
-}
-
-
-// Cek jika ada pengiriman form login
+// --- Proses Pengiriman Form Login (Metode POST) ---
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    // Ambil dan bersihkan input dari form
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    // --- Langkah 1: Cek Batasan Percobaan Login Gagal ---
-    // Hapus percobaan yang sudah kadaluarsa (lebih lama dari lockout_time)
-    if ($delete_old_attempts = $koneksi->prepare("DELETE FROM login_attempts WHERE attempt_time < DATE_SUB(NOW(), INTERVAL ? SECOND)")) {
-        $delete_old_attempts->bind_param("i", $lockout_time);
-        $delete_old_attempts->execute();
-        $delete_old_attempts->close();
+    // Validasi input form dasar
+    if (empty($username) || empty($password)) {
+        $error_message = "Username dan password tidak boleh kosong.";
     } else {
-        error_log("Failed to prepare DELETE statement for old login attempts: " . $koneksi->error);
-        $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti.";
-    }
+        // --- Langkah 1: Cek Batasan Percobaan Login Gagal ---
+        if ($stmt_delete_old = $koneksi->prepare("DELETE FROM login_attempts WHERE attempt_time < DATE_SUB(NOW(), INTERVAL ? SECOND)")) {
+            $stmt_delete_old->bind_param("i", $lockout_time);
+            $stmt_delete_old->execute();
+            $stmt_delete_old->close();
+        } else { error_log("DB_ERROR: Failed to prepare DELETE old attempts: " . $koneksi->error); $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti."; }
 
-    // Hitung percobaan login gagal dari IP yang sama
-    $ip_attempts = 0;
-    if ($stmt_check_ip = $koneksi->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip_address = ? AND attempt_time > DATE_SUB(NOW(), INTERVAL ? SECOND)")) {
-        $stmt_check_ip->bind_param("si", $client_ip, $lockout_time);
-        if ($stmt_check_ip->execute()) {
-            $stmt_check_ip->bind_result($ip_attempts);
-            $stmt_check_ip->fetch();
-        } else {
-            error_log("Failed to execute SELECT statement for IP attempts: " . $stmt_check_ip->error);
-            $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti.";
-        }
-        $stmt_check_ip->close();
-    } else {
-        error_log("Failed to prepare SELECT statement for IP attempts: " . $koneksi->error);
-        $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti.";
-    }
+        $ip_attempts = 0;
+        if (empty($error_message) && ($stmt_check_ip = $koneksi->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip_address = ? AND attempt_time > DATE_SUB(NOW(), INTERVAL ? SECOND)"))) {
+            $stmt_check_ip->bind_param("si", $client_ip, $lockout_time);
+            if ($stmt_check_ip->execute()) { $stmt_check_ip->bind_result($ip_attempts); $stmt_check_ip->fetch(); }
+            else { error_log("DB_ERROR: Failed to execute SELECT IP attempts: " . $stmt_check_ip->error); $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti."; }
+            $stmt_check_ip->close();
+        } elseif (!empty($error_message)) { /* Skip */ } else { error_log("DB_ERROR: Failed to prepare SELECT IP attempts: " . $koneksi->error); $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti."; }
 
-    // Hitung percobaan login gagal untuk username yang sama
-    $user_attempts = 0;
-    if ($stmt_check_user = $koneksi->prepare("SELECT COUNT(*) FROM login_attempts WHERE username_attempted = ? AND attempt_time > DATE_SUB(NOW(), INTERVAL ? SECOND)")) {
-        $stmt_check_user->bind_param("si", $username, $lockout_time);
-        if ($stmt_check_user->execute()) {
-            $stmt_check_user->bind_result($user_attempts);
-            $stmt_check_user->fetch();
-        } else {
-            error_log("Failed to execute SELECT statement for user attempts: " . $stmt_check_user->error);
-            $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti.";
-        }
-        $stmt_check_user->close();
-    } else {
-        error_log("Failed to prepare SELECT statement for user attempts: " . $koneksi->error);
-        $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti.";
-    }
+        $user_attempts = 0;
+        if (empty($error_message) && ($stmt_check_user = $koneksi->prepare("SELECT COUNT(*) FROM login_attempts WHERE username_attempted = ? AND attempt_time > DATE_SUB(NOW(), INTERVAL ? SECOND)"))) {
+            $stmt_check_user->bind_param("si", $username, $lockout_time);
+            if ($stmt_check_user->execute()) { $stmt_check_user->bind_result($user_attempts); $stmt_check_user->fetch(); }
+            else { error_log("DB_ERROR: Failed to execute SELECT user attempts: " . $stmt_check_user->error); $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti."; }
+            $stmt_check_user->close();
+        } elseif (!empty($error_message)) { /* Skip */ } else { error_log("DB_ERROR: Failed to prepare SELECT user attempts: " . $koneksi->error); $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti."; }
 
-    // Jika belum ada error_message dari masalah database
-    if (empty($error_message)) {
-        if ($ip_attempts >= $max_attempts || $user_attempts >= $max_attempts) {
-            $error_message = "Terlalu banyak percobaan login gagal. Harap coba lagi dalam " . ($lockout_time / 60) . " menit.";
-        } else {
-            // Lanjutkan dengan verifikasi kredensial karena belum mencapai batas
-            // Tambahkan kolom 'photo' ke dalam SELECT statement
-            if ($stmt = $koneksi->prepare("SELECT id, username, password, role, full_name, photo, session_id FROM users WHERE username = ?")) {
-                $stmt->bind_param("s", $username);
-                if ($stmt->execute()) {
-                    $result = $stmt->get_result();
+        if (empty($error_message)) {
+            if ($ip_attempts >= $max_attempts || $user_attempts >= $max_attempts) {
+                $error_message = "Terlalu banyak percobaan login gagal. Harap coba lagi dalam " . ($lockout_time / 60) . " menit.";
+            } else {
+                // --- Verifikasi Kredensial Pengguna ---
+                if ($stmt_get_user = $koneksi->prepare("SELECT id, username, password, role, full_name, photo, session_id FROM users WHERE username = ?")) {
+                    $stmt_get_user->bind_param("s", $username);
+                    if ($stmt_get_user->execute()) {
+                        $result_user_data = $stmt_get_user->get_result();
 
-                    if ($result->num_rows == 1) {
-                        $user = $result->fetch_assoc();
-                        if (password_verify($password, $user['password'])) {
-                            // Login berhasil
-                            if ($delete_success_attempts = $koneksi->prepare("DELETE FROM login_attempts WHERE username_attempted = ? OR ip_address = ?")) {
-                                $delete_success_attempts->bind_param("ss", $username, $client_ip);
-                                $delete_success_attempts->execute();
-                                $delete_success_attempts->close();
-                            } else {
-                                 error_log("Failed to prepare DELETE statement after successful login: " . $koneksi->error);
-                            }
+                        if ($result_user_data->num_rows == 1) {
+                            $user_data_from_db = $result_user_data->fetch_assoc();
+                            
+                            // Verifikasi password
+                            if (password_verify($password, $user_data_from_db['password'])) {
+                                // Login berhasil
+                                error_log("DEBUG_LOGIN: Password verified for user: " . $username);
 
-                            // Logika batasan login bersamaan (satu sesi aktif per akun)
-                            if (!empty($user['session_id']) && $user['session_id'] !== session_id()) {
-                                $error_message = "Anda sudah login dari perangkat lain. Harap logout dari perangkat tersebut terlebih dahulu.";
-                            } else {
-                                session_regenerate_id(true); // PENTING: Regenerasi ID sesi
-
-                                $_SESSION['user_id'] = $user['id'];
-                                $_SESSION['username'] = $user['username'];
-                                $_SESSION['role'] = $user['role'];
-                                $_SESSION['full_name'] = $user['full_name'];
-                                $_SESSION['photo'] = $user['photo']; // Simpan data foto ke session
-                                $_SESSION['last_activity'] = time(); // Set waktu aktivitas pertama kali login
-
-                                $current_session_id = session_id();
-                                if ($update_stmt = $koneksi->prepare("UPDATE users SET session_id = ? WHERE id = ?")) {
-                                    $update_stmt->bind_param("si", $current_session_id, $user['id']);
-                                    $update_stmt->execute();
-                                    $update_stmt->close();
+                                // --- Force Logout Sesi Lama di Database ---
+                                // Logika ini akan memastikan session_id di DB di-NULL-kan jika ada
+                                // Ini adalah bagian inti dari "last login wins"
+                                if ($user_data_from_db['session_id'] !== NULL) { 
+                                    error_log("DEBUG_LOGIN: Detected existing session_id in DB. Attempting to clear it for user ID: " . $user_data_from_db['id']);
+                                    $clear_old_session_stmt = $koneksi->prepare("UPDATE users SET session_id = NULL WHERE id = ?");
+                                    if ($clear_old_session_stmt) {
+                                        $clear_old_session_stmt->bind_param("i", $user_data_from_db['id']);
+                                        if ($clear_old_session_stmt->execute()) {
+                                            error_log("DEBUG_LOGIN: Old session_id successfully cleared in DB. Affected rows: " . $clear_old_session_stmt->affected_rows);
+                                        } else {
+                                            error_log("DB_ERROR: Failed to execute clear old session_id: " . $clear_old_session_stmt->error);
+                                        }
+                                        $clear_old_session_stmt->close();
+                                    } else {
+                                        error_log("DB_ERROR: Failed to prepare clear old session_id statement: " . $koneksi->error);
+                                    }
                                 } else {
-                                    error_log("Failed to prepare UPDATE statement for session ID: " . $koneksi->error);
+                                    error_log("DEBUG_LOGIN: No old session_id found in DB (already NULL).");
+                                }
+                                // --- AKHIR FORCE LOGOUT ---
+
+                                // Hapus percobaan login gagal sebelumnya untuk user ini dan IP ini
+                                if ($stmt_delete_success = $koneksi->prepare("DELETE FROM login_attempts WHERE username_attempted = ? OR ip_address = ?")) {
+                                    $stmt_delete_success->bind_param("ss", $username, $client_ip);
+                                    $stmt_delete_success->execute();
+                                    $stmt_delete_success->close();
+                                } else {
+                                     error_log("DB_ERROR: Failed to prepare DELETE attempts after success: " . $koneksi->error);
                                 }
 
-                                // Redirect sesuai peran
-                                switch ($user['role']) {
-                                    case 'admin':
-                                        header('Location: dashboard/admin/index.php');
-                                        break;
-                                    case 'developer':
-                                        header('Location: dashboard/developer/index.php');
-                                        break;
-                                    case 'teknisi':
-                                        header('Location: dashboard/teknisi/index.php');
-                                        break;
-                                    case 'siswa': // konsisten dengan 'student'
-                                        header('Location: dashboard/siswa/index.php');
-                                        break;
+                                session_regenerate_id(true); // PENTING: Regenerasi ID sesi baru
+                                $current_session_id = session_id(); 
+                                error_log("DEBUG_LOGIN: New session_id regenerated: " . $current_session_id);
+
+                                // Simpan data user ke dalam session
+                                $_SESSION['user_id'] = $user_data_from_db['id'];
+                                $_SESSION['username'] = $user_data_from_db['username'];
+                                $_SESSION['role'] = $user_data_from_db['role'];
+                                $_SESSION['full_name'] = $user_data_from_db['full_name'];
+                                $_SESSION['photo'] = $user_data_from_db['photo']; 
+                                $_SESSION['last_activity'] = time(); 
+
+                                // Simpan ID sesi baru ke database untuk melacak sesi aktif
+                                if ($stmt_update_session = $koneksi->prepare("UPDATE users SET session_id = ? WHERE id = ?")) {
+                                    $stmt_update_session->bind_param("si", $current_session_id, $user_data_from_db['id']);
+                                    if ($stmt_update_session->execute()) {
+                                        error_log("DEBUG_LOGIN: New session_id " . $current_session_id . " successfully saved to DB for user " . $user_data_from_db['id']);
+                                    } else {
+                                        error_log("DB_ERROR: Failed to execute update new session ID: " . $stmt_update_session->error);
+                                    }
+                                    $stmt_update_session->close();
+                                } else {
+                                    error_log("DB_ERROR: Failed to prepare update new session ID statement: " . $koneksi->error);
+                                }
+
+                                // Redirect ke dashboard sesuai peran pengguna
+                                switch ($user_data_from_db['role']) {
+                                    case 'admin': header('Location: dashboard/admin/index.php'); exit();
+                                    case 'developer': header('Location: dashboard/developer/index.php'); exit();
+                                    case 'teknisi': header('Location: dashboard/teknisi/index.php'); exit();
+                                    case 'siswa': header('Location: dashboard/siswa/index.php'); exit();
                                     default:
-                                        // Handle unknown role
                                         session_unset();
                                         session_destroy();
-                                        $error_message = "Peran pengguna tidak dikenal."; // Set error message here
-                                        break; // Don't redirect if error is set
+                                        $error_message = "Peran pengguna tidak dikenal atau tidak valid."; 
+                                        break; 
                                 }
-                                if (empty($error_message)) { // Only exit if no error message was set by role check
-                                    exit();
+                                
+                            } else {
+                                // Password salah
+                                $error_message = "Username atau password salah.";
+                                if ($stmt_insert_attempt = $koneksi->prepare("INSERT INTO login_attempts (username_attempted, ip_address) VALUES (?, ?)")) {
+                                    $stmt_insert_attempt->bind_param("ss", $username, $client_ip);
+                                    $stmt_insert_attempt->execute();
+                                    $stmt_insert_attempt->close();
+                                } else {
+                                     error_log("DB_ERROR: Failed to prepare INSERT attempt (password wrong): " . $koneksi->error);
                                 }
                             }
                         } else {
+                            // Username tidak ditemukan di database
                             $error_message = "Username atau password salah.";
                             if ($stmt_insert_attempt = $koneksi->prepare("INSERT INTO login_attempts (username_attempted, ip_address) VALUES (?, ?)")) {
                                 $stmt_insert_attempt->bind_param("ss", $username, $client_ip);
                                 $stmt_insert_attempt->execute();
                                 $stmt_insert_attempt->close();
                             } else {
-                                 error_log("Failed to prepare INSERT statement for login attempt (password wrong): " . $koneksi->error);
+                                 error_log("DB_ERROR: Failed to prepare INSERT attempt (username not found): " . $koneksi->error);
                             }
                         }
                     } else {
-                        $error_message = "Username atau password salah.";
-                        if ($stmt_insert_attempt = $koneksi->prepare("INSERT INTO login_attempts (username_attempted, ip_address) VALUES (?, ?)")) {
-                            $stmt_insert_attempt->bind_param("ss", $username, $client_ip);
-                            $stmt_insert_attempt->execute();
-                            $stmt_insert_attempt->close();
-                        } else {
-                             error_log("Failed to prepare INSERT statement for login attempt (username not found): " . $koneksi->error);
-                        }
+                         error_log("DB_ERROR: Failed to execute SELECT statement for user login: " . $stmt_get_user->error);
+                         $error_message = "Terjadi kesalahan sistem saat verifikasi pengguna. Silakan coba lagi nanti.";
                     }
+                    $stmt_get_user->close();
                 } else {
-                     error_log("Failed to execute SELECT statement for user login: " . $stmt->error);
-                     $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti.";
+                    error_log("DB_ERROR: Failed to prepare SELECT statement for user login: " . $koneksi->error);
+                    $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti.";
                 }
-                $stmt->close();
-            } else {
-                error_log("Failed to prepare SELECT statement for user login: " . $koneksi->error);
-                $error_message = "Terjadi kesalahan sistem. Silakan coba lagi nanti.";
             }
         }
     }
