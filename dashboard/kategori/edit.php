@@ -3,7 +3,6 @@
 
 session_start();
 
-include '../dashboard_header.php';
 include '../../includes/inc_koneksi.php';
 
 // Cek apakah user sudah login dan memiliki role admin/developer/teknisi
@@ -85,6 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_data['name'] = $name;
     $category_data['description'] = $description;
 }
+
+include '../dashboard_header.php';
 ?>
 
 <main class="content-wrapper">

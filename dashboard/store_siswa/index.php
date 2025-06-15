@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../../includes/inc_koneksi.php';
-require_once '../dashboard_header.php';
+
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'siswa') {
     header("Location: ../../login.php");
@@ -120,7 +120,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1 &&
 
     $whatsapp_link_url = "https://wa.me/" . $clean_admin_number . "?text=" . urlencode($whatsapp_message_text);
 }
-
+require_once '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5">
@@ -154,7 +154,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1 &&
                     }
                     ?>
                 </select>
-                <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i> Filter</button>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search me-1"></i> </button>
             </form>
         </div>
 
@@ -239,6 +239,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1 &&
                 <h3 class="box-title">Riwayat Penukaran Barang Anda</h3>
             </div>
             <div class="box-body">
+                <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -293,6 +294,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1 &&
                         ?>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

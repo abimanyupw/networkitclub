@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../../includes/inc_koneksi.php';
-require_once '../dashboard_header.php';
+
 
 if (!isset($_SESSION['user_id']) || (!in_array($_SESSION['role'], ['developer', 'admin']))) {
     header('Location: ../../login.php');
@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+require_once '../dashboard_header.php';
 ?>
 
 <div class="container py-4">

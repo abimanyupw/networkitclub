@@ -1,7 +1,7 @@
 <?php
 ob_start();
 session_start();
-include '../dashboard_header.php';
+
 include '../../includes/inc_koneksi.php';
 
 // Akses kontrol
@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+include '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5">

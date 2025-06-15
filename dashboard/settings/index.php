@@ -1,5 +1,6 @@
 <?php
 // dashboard/settings/index.php
+ob_start();
 session_start();
 require_once '../../includes/inc_koneksi.php';
 

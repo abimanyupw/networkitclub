@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../dashboard_header.php';
+
 include '../../includes/inc_koneksi.php';
 
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'developer', 'teknisi'])) {
@@ -31,7 +31,7 @@ $start = ($page - 1) * $limit;
 $search_query = isset($_GET['search']) ? $koneksi->real_escape_string($_GET['search']) : '';
 $where_clause = '';
 if (!empty($search_query)) {
-    $where_clause = " WHERE m.title LIKE '%$search_query%' OR m.content LIKE '%$search_query%' OR c.name LIKE '%$search_query%' OR cl.name LIKE '%$search_query%' OR u.username LIKE '%$search_query%'";
+    $where_clause = " WHERE m.title LIKE '%$search_query%' OR m.content LIKE '%$search_query%' OR c.name LIKE '%$search_query%' OR cl.name LIKE '%$search_query%' OR u.full_name LIKE '%$search_query%'";
 }
 
 // Fetch total number of materials for pagination
@@ -54,7 +54,7 @@ $total_pages = ceil($total_materials / $limit);
 
 // Fetch all materials for display
 $sql = "SELECT m.id, m.title, SUBSTRING(m.content, 1, 150) AS content_excerpt, m.file_url, m.material_type,
-               c.name AS category_name, cl.name AS class_name, u.username AS uploader_username, m.updated_at
+               c.name AS category_name, cl.name AS class_name, u.full_name AS uploader_username, m.updated_at
         FROM materials m
         LEFT JOIN categories c ON m.category_id = c.id
         LEFT JOIN classes cl ON m.class_id = cl.id
@@ -70,6 +70,7 @@ if ($result && $result->num_rows > 0) {
 } else if ($result === false) {
     $error_message = "Gagal mengambil data materi: " . $koneksi->error;
 }
+include '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5" style="min-width: 100%;">
@@ -77,7 +78,7 @@ if ($result && $result->num_rows > 0) {
         <h1><?php echo $page_title; ?></h1>
         <ol class="breadcrumb gap-2">
             <li><a href="../../index.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li class="active"><?php echo $page_title; ?></li>
+            <li class="active text-white"><?php echo $page_title; ?></li>
         </ol>
     </section>
 

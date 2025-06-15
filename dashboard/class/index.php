@@ -1,6 +1,5 @@
 <?php
 session_start();
-include '../dashboard_header.php';
 include '../../includes/inc_koneksi.php';
 
 // Pastikan hanya user dengan role tertentu yang bisa mengakses
@@ -36,7 +35,7 @@ $total_classes = 0;
 
 if (!empty($search_query)) {
     $search_term = "%$search_query%";
-    $sql_count = "SELECT COUNT(c.id) AS total FROM classes c LEFT JOIN users u ON c.created_by = u.id WHERE c.name LIKE ? OR c.description LIKE ? OR u.username LIKE ?";
+    $sql_count = "SELECT COUNT(c.id) AS total FROM classes c LEFT JOIN users u ON c.created_by = u.id WHERE c.name LIKE ? OR c.description LIKE ? OR u.full_name LIKE ?";
     $stmt = $koneksi->prepare($sql_count);
     $stmt->bind_param("sss", $search_term, $search_term, $search_term);
     $stmt->execute();
@@ -45,10 +44,10 @@ if (!empty($search_query)) {
     $stmt->close();
 
     $sql = "SELECT c.id, c.name, c.description, SUBSTRING(c.description, 1, 150) AS description_excerpt, c.image_url,
-                   u.username AS creator_username, c.created_at
+                   u.full_name AS creator_username, c.created_at
             FROM classes c
             LEFT JOIN users u ON c.created_by = u.id
-            WHERE c.name LIKE ? OR c.description LIKE ? OR u.username LIKE ?
+            WHERE c.name LIKE ? OR c.description LIKE ? OR u.full_name LIKE ?
             ORDER BY c.created_at DESC LIMIT ?, ?";
     $stmt = $koneksi->prepare($sql);
     $stmt->bind_param("sssii", $search_term, $search_term, $search_term, $start, $limit);
@@ -64,7 +63,7 @@ if (!empty($search_query)) {
     $total_classes = $result->fetch_assoc()['total'];
 
     $sql = "SELECT c.id, c.name, c.description, SUBSTRING(c.description, 1, 150) AS description_excerpt, c.image_url,
-                   u.username AS creator_username, c.created_at
+                   u.full_name AS creator_username, c.created_at
             FROM classes c
             LEFT JOIN users u ON c.created_by = u.id
             ORDER BY c.created_at DESC LIMIT ?, ?";
@@ -79,6 +78,7 @@ if (!empty($search_query)) {
 }
 
 $total_pages = ceil($total_classes / $limit);
+include '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5">

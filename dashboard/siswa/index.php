@@ -111,7 +111,7 @@ include '../dashboard_header.php';
                     </div>
                 </div>
                 <div class="card-footer bg-light text-end d-flex justify-content-end align-items-center">
-                    <a href="../badges/index.php" class="text-dark text-decoration-none small">Lihat Semua <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="../badge_siswa/index.php" class="text-dark text-decoration-none small">Lihat Semua <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
@@ -135,7 +135,7 @@ include '../dashboard_header.php';
                     </div>
                 </div>
                 <div class="card-footer bg-light text-end d-flex justify-content-end align-items-center">
-                    <a href="../assignments/index.php" class="text-dark text-decoration-none small">Lihat Tugas <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="../tugas_siswa/index.php" class="text-dark text-decoration-none small">Lihat Tugas <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
@@ -173,7 +173,7 @@ include '../dashboard_header.php';
                             <?php while($info = $result_info->fetch_assoc()): ?>
                                 <li class="list-group-item">
                                     <h5><?= htmlspecialchars($info['title']) ?></h5>
-                                    <p><?= nl2br(htmlspecialchars($info['content'])) ?></p>
+                                    <p><?= nl2br(($info['content'])) ?></p>
                                     <small class="text-muted">Diposting pada <?= $info['created_at'] ?></small>
                                 </li>
                             <?php endwhile; ?>
@@ -205,7 +205,7 @@ include '../dashboard_header.php';
                                         <strong><?= htmlspecialchars($tugas['title']) ?></strong><br>
                                         <small class="text-muted">Deadline: <?= htmlspecialchars($tugas['deadline']) ?></small>
                                     </div>
-                                    <a href="../assignments/index.php" class="btn btn-sm btn-primary">Lihat</a>
+                                    <a href="../tugas_siswa/index.php" class="btn btn-sm btn-primary">Lihat</a>
                                 </li>
                             <?php endwhile; ?>
                         </ul>

@@ -1,6 +1,5 @@
 <?php
 session_start();
-include '../dashboard_header.php';
 include '../../includes/inc_koneksi.php';
 
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'developer', 'teknisi'])) {
@@ -35,6 +34,7 @@ if ($search_query !== '') {
 }
 $sql .= " ORDER BY id DESC LIMIT $limit OFFSET $offset";
 $result = mysqli_query($koneksi, $sql);
+include '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5" style="min-width: 100%;">
@@ -76,44 +76,46 @@ $result = mysqli_query($koneksi, $sql);
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         <?php endif; ?>
-
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Deskripsi</th>
-                    <th>Gambar</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
-                    <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= htmlspecialchars($row['name']) ?></td>
-                            <td><?= htmlspecialchars($row['description']) ?></td>
-                            <td>
-                                <?php if (!empty($row['image_url'])): ?>
-                                    <img src="../../uploads/<?= htmlspecialchars($row['image_url']) ?>" alt="Badge Image" width="50">
-                                <?php else: ?>
-                                    <span class="text-muted">(Tidak ada)</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
-                                <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus badge ini?')"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
+        
+        <div class="table-responsive">
+            <table class="table table-striped table-primary">
+                <thead>
                     <tr>
-                        <td colspan="5" class="text-center">Belum ada badge</td>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Deskripsi</th>
+                        <th>Gambar</th>
+                        <th>Aksi</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
+                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= htmlspecialchars($row['name']) ?></td>
+                                <td><?= htmlspecialchars($row['description']) ?></td>
+                                <td>
+                                    <?php if (!empty($row['image_url'])): ?>
+                                        <img src="../../uploads/<?= htmlspecialchars($row['image_url']) ?>" alt="Badge Image" width="50">
+                                    <?php else: ?>
+                                        <span class="text-muted">(Tidak ada)</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
+                                    <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus badge ini?')"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5" class="text-center">Belum ada badge</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <nav aria-label="Page navigation">

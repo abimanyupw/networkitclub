@@ -144,8 +144,8 @@ HTML;
                         <ul class="list-group">
                             <?php while($info = $result_info->fetch_assoc()): ?>
                                 <li class="list-group-item">
-                                    <h5><?= htmlspecialchars($info['title']) ?></h5>
-                                    <p><?= nl2br(htmlspecialchars($info['content'])) ?></p>
+                                    <h5><?= ($info['title']) ?></h5>
+                                    <p><?= nl2br(($info['content'])) ?></p>
                                     <small class="text-muted">Diposting pada <?= $info['created_at'] ?></small>
                                 </li>
                             <?php endwhile; ?>
@@ -165,7 +165,7 @@ HTML;
             <div class="card shadow">
                 <div class="card-header bg-secondary text-white">Distribusi Role Pengguna</div>
                 <div class="card-body">
-                    <canvas id="userRoleChart" style="max-height: 355px; width: 100%;"></canvas>
+                    <canvas id="userRoleChart" style="max-height: 340px; width: 100%;"></canvas>
                 </div>
             </div>
         </div>

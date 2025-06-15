@@ -1,5 +1,56 @@
 /* material_detail.css */
+/* material_detail.css */
 
+/* ... (kode CSS Anda yang lain di atas) ... */
+
+/* Styling untuk gambar yang disisipkan di dalam konten Summernote */
+.material-full-content img {
+  max-width: 100%; /* SANGAT PENTING: Gambar tidak akan meluber */
+  height: auto; /* Menjaga rasio aspek gambar */
+  display: block; /* Menghilangkan spasi ekstra di bawah gambar */
+  margin: 1em auto; /* Memusatkan gambar secara horizontal dan memberikan margin vertikal */
+  border-radius: 5px; /* Opsional: sedikit sudut membulat */
+  /* Tambahan opsional untuk estetika */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sedikit bayangan */
+}
+
+/* Styling untuk video yang disisipkan di dalam konten Summernote */
+/* Ini akan menargetkan tag <video> yang diunggah langsung */
+.material-full-content video {
+  max-width: 100%; /* SANGAT PENTING: Video tidak akan meluber */
+  height: auto; /* Menjaga rasio aspek video */
+  display: block; /* Menghilangkan spasi ekstra */
+  margin: 1em auto; /* Memusatkan video secara horizontal */
+  border-radius: 5px; /* Opsional: sudut membulat */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sedikit bayangan */
+}
+
+/* Styling untuk video embed eksternal (YouTube/Vimeo) */
+/* Anda sudah memiliki ini, pastikan propertinya benar */
+.video-embed-full {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio (9/16 * 100%) */
+  height: 0;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(99, 164, 255, 0.4);
+  max-width: 100%; /* Pastikan kontainer embed juga tidak meluber */
+  margin-left: auto; /* Memusatkan kontainer embed */
+  margin-right: auto; /* Memusatkan kontainer embed */
+}
+
+.video-embed-full iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+/* ... (Sisa kode CSS Anda di bawahnya) ... */
 .material-detail-wrapper {
   max-width: 1500px;
   margin: 10px auto;
@@ -13,7 +64,7 @@
 .material-detail-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   padding: 10px;
 }
 

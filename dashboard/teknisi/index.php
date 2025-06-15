@@ -115,7 +115,7 @@ HTML;
                             <?php while($info = $result_info->fetch_assoc()): ?>
                                 <li class="list-group-item">
                                     <h5><?= htmlspecialchars($info['title']) ?></h5>
-                                    <p><?= nl2br(htmlspecialchars($info['content'])) ?></p>
+                                    <p><?= nl2br(($info['content'])) ?></p>
                                     <small class="text-muted">Diposting pada <?= $info['created_at'] ?></small>
                                 </li>
                             <?php endwhile; ?>

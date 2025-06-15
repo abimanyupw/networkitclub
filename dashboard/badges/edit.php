@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'deve
     header('Location: ../../login.php');
     exit();
 }
-
+$page_title='Edit Badge';
 $error_message = '';
 $success_message = '';
 
@@ -86,8 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include '../dashboard_header.php';
 ?>
 
-<div class="container mt-5">
-    <h2>Edit Badge</h2>
+<div class="content-wrapper mb-5" style="min-width: 100%;">
+    <section class="content-header">
+        <h1><?= $page_title ?></h1>
+        <ol class="breadcrumb gap-2">
+            <li><a href="../../index.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="index.php">Manajemen Tugas</a></li>
+        </ol>
+    </section>
 
     <?php if ($error_message): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error_message) ?></div>

@@ -1,7 +1,7 @@
 <?php
 // class_detail.php
 session_start(); // Mulai session
-include '../dashboard_header.php';
+
 include '../../includes/inc_koneksi.php'; // Koneksi database
 
 // Mengambil ID kelas dari parameter URL (misal: ?id=1)
@@ -65,6 +65,7 @@ if ($class_id > 0) {
         while ($row = $result_materials->fetch_assoc()) {
             $materials[] = $row;
         }
+        include '../dashboard_header.php';
         ?>
         
         <div class="class-detail-wrapper">

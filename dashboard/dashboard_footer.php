@@ -93,49 +93,55 @@
     });
 </script>
 
-    <?php if (isset($enable_material_scripts) && $enable_material_scripts === true): ?>
-    <script>
-        // Pastikan jQuery sudah dimuat sebelum script ini
-        $(document).ready(function() {
-            // Initialize Summernote
-            if ($('#material_content').length) {
-                $('#material_content').summernote({
-                    placeholder: 'Isi konten materi di sini...',
-                    tabsize: 2,
-                    height: 300,
-                    toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'underline', 'clear']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['table', ['table']],
-                        ['insert', ['link', 'picture', 'video']],
-                        ['view', ['fullscreen', 'codeview', 'help']]
-                    ]
-                });
-            }
+   <?php if (isset($enable_material_scripts) && $enable_material_scripts === true): ?>
+<script>
+    $(document).ready(function() {
+        if ($('#material_content').length) {
+            $('#material_content').summernote({
+                placeholder: 'Isi konten materi di sini...',
+                tabsize: 2,
+                height: 300,
+                toolbar: [
+                    // Kelompok Dasar
+                    ['style', ['style']], // Paragraph Styles (Normal, H1, H2, dst.)
+                    ['fontname', ['fontname']], // <-- MENAMBAHKAN: Pilihan Font Family
+                    ['fontsize', ['fontsize']], // <-- MENAMBAHKAN: Pilihan Font Size
+                    ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']], // <-- MENAMBAHKAN: Italic, Strikethrough, Superscript, Subscript
+                    ['color', ['color']], // Warna teks
+                    ['para', ['ul', 'ol', 'paragraph', 'height']], // <-- MENAMBAHKAN: Line Height
+                    ['table', ['table']], // Tabel
+                    ['insert', ['link', 'picture', 'video', 'hr']], // <-- MENAMBAHKAN: Horizontal Rule (Garis Pembatas)
+                    ['view', ['fullscreen', 'codeview', 'help']], // Fullscreen, Code View, Help
+                    ['misc', ['undo', 'redo', 'print', 'help']] // <-- MENAMBAHKAN: Undo, Redo, Print (jika dibutuhkan)
+                ],
+                // Opsi tambahan untuk fontname dan fontsize
+                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Merriweather', 'Open Sans', 'Roboto', 'Times New Roman'], // Daftar font yang tersedia
+                fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36', '48'], // Daftar ukuran font
+                lineHeights: ['0.8', '1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'] // Daftar tinggi baris
+            });
+        }
 
-            // Function to toggle sections based on material type
-            function toggleFileUrlField() {
-                if ($('#material_type').length) {
-                    var selectedType = $('#material_type').val();
-                    if (selectedType === 'text' || selectedType === '') {
-                        $('#file_url_section').hide();
-                        $('#file_url').val('');
-                    } else {
-                        $('#file_url_section').show();
-                    }
+        // ... (Kode toggleFileUrlField tetap sama) ...
+        function toggleFileUrlField() {
+            if ($('#material_type').length) {
+                var selectedType = $('#material_type').val();
+                if (selectedType === 'text' || selectedType === '') {
+                    $('#file_url_section').hide();
+                    $('#file_url').val('');
+                } else {
+                    $('#file_url_section').show();
                 }
             }
+        }
 
+        toggleFileUrlField();
+
+        $('#material_type').change(function() {
             toggleFileUrlField();
-
-            $('#material_type').change(function() {
-                toggleFileUrlField();
-            });
         });
-    </script>
-    <?php endif; // End if enable_material_scripts ?>
+    });
+</script>
+<?php endif; ?>
 
     </body>
     </html>

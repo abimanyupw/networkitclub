@@ -54,7 +54,6 @@ require_once '../dashboard_header.php';
         <ol class="breadcrumb gap-2">
             <li><a href="../../index.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li><a href="index.php">Store</a></li>
-            <li class="active">Tambah</li>
         </ol>
     </section>
 

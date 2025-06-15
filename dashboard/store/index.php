@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../../includes/inc_koneksi.php';
-require_once '../dashboard_header.php';
+
 
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'developer', 'teknisi'])) {
     header("Location: ../../login.php");
@@ -52,6 +52,7 @@ if (!$result) {
     echo "Error: " . mysqli_error($koneksi);
     exit();
 }
+require_once '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5">
@@ -74,46 +75,47 @@ if (!$result) {
                 <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
-
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Barang</th>
-                    <th>Deskripsi</th>
-                    <th>Gambar</th>
-                    <th>Badge Diperlukan</th>
-                    <th>Stok</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
-                    <?php while ($item = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= htmlspecialchars($item['name']) ?></td>
-                            <td><?= htmlspecialchars($item['description']) ?></td>
-                            <td>
-                                <?php if (!empty($item['image_url'])): ?>
-                                    <img src="../../uploads/<?= htmlspecialchars($item['image_url']) ?>" width="60" alt="Gambar">
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?= htmlspecialchars($item['required_badges'] ?: 'Tidak ada') ?>
-                            </td>
-                            <td><?= (int)$item['stock'] ?></td>
-                            <td>
-                                <a href="edit.php?id=<?= $item['id'] ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
-                                <a href="delete.php?id=<?= $item['id'] ?>" onclick="return confirm('Yakin ingin menghapus barang ini?')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr><td colspan="7" class="text-center">Tidak ada data barang.</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-primary">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Barang</th>
+                        <th>Deskripsi</th>
+                        <th>Gambar</th>
+                        <th>Badge Diperlukan</th>
+                        <th>Stok</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
+                        <?php while ($item = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= htmlspecialchars($item['name']) ?></td>
+                                <td><?= htmlspecialchars($item['description']) ?></td>
+                                <td>
+                                    <?php if (!empty($item['image_url'])): ?>
+                                        <img src="../../uploads/<?= htmlspecialchars($item['image_url']) ?>" width="60" alt="Gambar">
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= htmlspecialchars($item['required_badges'] ?: 'Tidak ada') ?>
+                                </td>
+                                <td><?= (int)$item['stock'] ?></td>
+                                <td>
+                                    <a href="edit.php?id=<?= $item['id'] ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
+                                    <a href="delete.php?id=<?= $item['id'] ?>" onclick="return confirm('Yakin ingin menghapus barang ini?')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="7" class="text-center">Tidak ada data barang.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
         <nav>
             <ul class="pagination justify-content-center">

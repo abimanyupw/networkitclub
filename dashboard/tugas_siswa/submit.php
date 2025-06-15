@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container mt-4">
         <h4><?= htmlspecialchars($assignment['title']) ?></h4>
         <p><strong>Deadline:</strong> <?= htmlspecialchars($assignment['deadline']) ?></p>
-        <p><?= nl2br(htmlspecialchars($assignment['description'])) ?></p>
+        <p><?= nl2br(($assignment['description'])) ?></p>
 
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>

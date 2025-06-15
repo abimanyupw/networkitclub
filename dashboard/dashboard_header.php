@@ -1,7 +1,64 @@
 <?php
 // dashboard/dashboard_header.php
 
-$page_title = $page_title ?? 'Dashboard NIC';
+// Pastikan session sudah dimulai. session_start() harus dipanggil di awal setiap skrip yang menggunakan session.
+// Jika file yang memanggil dashboard_header.php sudah memiliki session_start(), ini bisa diabaikan.
+// Namun, untuk keamanan, pastikan tidak ada output sebelum session_start().
+// session_start(); // Biasanya ini ada di file utama yang memanggil header ini.
+
+// Pastikan koneksi database tersedia di sini untuk validasi sesi
+// Lokasi relatif dari dashboard_header.php ke inc_koneksi.php
+require_once '../../includes/inc_koneksi.php'; 
+
+// --- LOGIKA VALIDASI SESI AKTIF DI DATABASE ---
+// Logika ini harus dijalankan di setiap halaman yang dilindungi
+if (isset($_SESSION['user_id'])) {
+    $current_user_id = $_SESSION['user_id'];
+    $current_browser_session_id = session_id(); // ID sesi dari cookie browser saat ini
+
+    // Ambil session_id yang tersimpan di database untuk user ini
+    $stmt_check_db_session = $koneksi->prepare("SELECT session_id FROM users WHERE id = ?");
+    if ($stmt_check_db_session) {
+        $stmt_check_db_session->bind_param("i", $current_user_id);
+        $stmt_check_db_session->execute();
+        $result_db_session = $stmt_check_db_session->get_result();
+
+        if ($result_db_session->num_rows > 0) {
+            $db_session_data = $result_db_session->fetch_assoc();
+            $db_stored_session_id = $db_session_data['session_id']; // ID sesi yang tersimpan di database
+
+            // Bandingkan ID sesi dari browser dengan yang di database
+            // Jika tidak cocok (atau di DB NULL), berarti sesi di browser ini tidak lagi valid
+            if (empty($db_stored_session_id) || $db_stored_session_id !== $current_browser_session_id) {
+                // Sesi di browser ini telah di-logout dari tempat lain atau kadaluarsa
+                session_unset();    // Hapus semua variabel sesi
+                session_destroy();  // Hancurkan data sesi di server
+                // Redirect ke halaman login dengan pesan 'logged_out'
+                header("Location: ../../login.php?msg=logged_out"); 
+                exit(); // Hentikan eksekusi skrip
+            }
+        } else {
+            // User ID dari sesi tidak ditemukan di database (mungkin akun dihapus)
+            session_unset();
+            session_destroy();
+            header("Location: ../../login.php?msg=user_not_found_session");
+            exit();
+        }
+        $stmt_check_db_session->close();
+    } else {
+        // Terjadi kesalahan saat menyiapkan statement, log error dan asumsikan sesi tidak valid
+        error_log("DB_ERROR: Failed to prepare session validation statement in dashboard_header.php: " . $koneksi->error);
+        session_unset();
+        session_destroy();
+        header("Location: ../../login.php?msg=db_error_session_check");
+        exit();
+    }
+}
+// --- AKHIR LOGIKA VALIDASI SESI AKTIF ---
+
+
+// Variabel untuk informasi profil yang ditampilkan di header
+$page_title = $page_title ?? 'Dashboard NIC'; // Gunakan nilai $page_title yang sudah diset di halaman pemanggil
 
 $logged_in_username = $_SESSION['full_name'] ?? 'Guest';
 $logged_in_role = $_SESSION['role'] ?? 'Guest';
@@ -46,6 +103,17 @@ if (empty($path_to_compare) && (strpos($current_full_uri_path, '/index.php') !==
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <style>
+        .note-editable {
+    background-color: white !important; /* Paksa latar belakang putih */
+    color: #333 !important; /* Pastikan teks berwarna gelap agar terbaca */
+}
+
+/* Jika seluruh editor Summernote memiliki latar belakang gelap */
+.note-editor.note-frame {
+    background-color: white !important;
+}
+    </style>
     
     <link rel="stylesheet" href="../../css/dashboard.css" />
     <link rel="stylesheet" href="../css/class.css" />
@@ -70,7 +138,6 @@ if (empty($path_to_compare) && (strpos($current_full_uri_path, '/index.php') !==
             $photo_path = '../../uploads/profile_photos/' . ($profile_photo ?: $default_photo);
 
             if (file_exists($photo_path)) {
-                // Tambahkan ?v=timestamp untuk hindari cache
                 $photo_url = $photo_path . '?v=' . time();
                 echo '<img src="' . htmlspecialchars($photo_url) . '" alt="Foto Profil" class="profile-avatar rounded-circle" width="50" style="object-fit: cover;" />';
             } else {
@@ -78,7 +145,7 @@ if (empty($path_to_compare) && (strpos($current_full_uri_path, '/index.php') !==
             }
             ?>
 
-  <div class="profile-name"><?php echo htmlspecialchars($logged_in_username); ?></div>
+  <div class="profile-name" style="text-align: center;"><?php echo htmlspecialchars($logged_in_username); ?></div>
   <div class="profile-role text-uppercase"><?php echo htmlspecialchars($logged_in_role); ?></div>
 </div>
 
@@ -196,6 +263,5 @@ if (empty($path_to_compare) && (strpos($current_full_uri_path, '/index.php') !==
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="page-content-area">
-            
+        <div class="main-content" style="width: 100%;">
+            <div class="page-content-area" style="padding: 0.5rem;">

@@ -1,10 +1,7 @@
 <?php
 // dashboard/categories/index.php
-
 session_start();
-
 // Sertakan file header dashboard
-include '../dashboard_header.php';
 // Sertakan file koneksi database
 include '../../includes/inc_koneksi.php'; // Pastikan ini menyediakan objek $koneksi (mysqli)
 
@@ -68,6 +65,7 @@ if ($result && $result->num_rows > 0) {
 } else if ($result === false) {
     $error_message = "Gagal mengambil data kategori: " . $koneksi->error;
 }
+include '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper h-100">

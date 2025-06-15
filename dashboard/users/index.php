@@ -1,7 +1,7 @@
 <?php
 session_start();
 // Sertakan file header dashboard
-include '../dashboard_header.php';
+
 // Sertakan file koneksi database
 include '../../includes/inc_koneksi.php';
 
@@ -115,6 +115,7 @@ if ($stmt === false) {
         // Mungkin log error ini ke file log alih-alih menampilkannya langsung di produksi
     }
 }
+include '../dashboard_header.php';
 ?>
 
 <main class="content-wrapper">

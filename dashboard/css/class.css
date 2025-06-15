@@ -38,7 +38,7 @@ body {
   flex-direction: column;
   width: 22rem;
   border-radius: 12px;
-  background-color: rgb(0, 224, 254);
+  background-color: rgb(0, 191, 255);
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -87,11 +87,13 @@ body {
   color: var(--black);
   margin-top: 0;
   margin-bottom: 0.5rem;
+  text-decoration: none;
 }
 
 .class .class-card .class-item.minimalist .card-content p {
   font-size: 0.95rem;
   color: #242424;
+  text-decoration: none;
 }
 
 .class .class-card .class-item.minimalist .card-meta {

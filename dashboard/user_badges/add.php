@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'deve
     exit();
 }
 
+$page_title = "Tambah Badges User";
 // Ambil semua user dengan role siswa
 $users = mysqli_query($koneksi, "SELECT id, full_name FROM users WHERE role = 'siswa' ORDER BY full_name");
 $badges = mysqli_query($koneksi, "SELECT id, name FROM badges ORDER BY name");
@@ -28,9 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 include '../dashboard_header.php';
 ?>
-
-<div class="container mt-5">
-    <h2>Beri Badge ke Siswa</h2>
+<div class="content-wrapper mb-5" style="min-width: 100%;">
+    <section class="content-header">
+        <h1><?= $page_title ?></h1>
+        <ol class="breadcrumb gap-2">
+            <li><a href="../../index.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="index.php">Manajemen Badges User</a></li>
+        </ol>
+    </section>
     <form method="POST" class="mt-4">
         <div class="mb-3">
             <label for="user_id" class="form-label">Siswa</label>

@@ -2,7 +2,7 @@
 // dashboard/submissions/index.php
 session_start();
 require_once '../../includes/inc_koneksi.php';
-require_once '../dashboard_header.php';
+
 
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'developer', 'teknisi'])) {
     $_SESSION['error_message'] = "Anda tidak memiliki akses ke halaman ini.";
@@ -38,6 +38,7 @@ ORDER BY s.submitted_at DESC
 LIMIT $limit OFFSET $offset
 ";
 $result = mysqli_query($koneksi, $query);
+require_once '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5" style="min-width: 100%;">
@@ -63,59 +64,60 @@ $result = mysqli_query($koneksi, $query);
                 </form>
             </div>
         </div>
-
-        <table class="table table-bordered table-striped mt-2">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Siswa</th>
-                    <th>Judul Tugas</th>
-                    <th>File</th>
-                    <th>Waktu Kirim</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
-                    <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= htmlspecialchars($row['siswa']) ?></td>
-                            <td><?= htmlspecialchars($row['tugas']) ?></td>
-                            <td>
-                                <?php if ($row['file_path']): ?>
-                                    <a href="../../uploads/<?= htmlspecialchars($row['file_path']) ?>" target="_blank">Lihat File</a>
-                                <?php else: ?>
-                                    <span class="text-muted">-</span>
-                                <?php endif; ?>
-                            </td>
-                            <td><?= htmlspecialchars($row['submitted_at']) ?></td>
-                            <td>
-                                <?php
-                                $status_badge = [
-                                    'pending' => 'warning',
-                                    'approved' => 'success',
-                                    'rejected' => 'danger'
-                                ];
-                                ?>
-                                <span class="badge bg-<?= $status_badge[$row['status']] ?>"><?= ucfirst($row['status']) ?></span>
-                            </td>
-                            <td>
-                                <?php if ($row['status'] === 'pending'): ?>
-                                    <a href="approve.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-success" onclick="return confirm('Setujui tugas ini?')">Setujui</a>
-                                    <a href="reject.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tolak tugas ini?')">Tolak</a>
-                                <?php else: ?>
-                                    <span class="text-muted">-</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr><td colspan="7" class="text-center">Belum ada tugas yang dikumpulkan</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mt-2 table-primary">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Siswa</th>
+                        <th>Judul Tugas</th>
+                        <th>File</th>
+                        <th>Waktu Kirim</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
+                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= htmlspecialchars($row['siswa']) ?></td>
+                                <td><?= htmlspecialchars($row['tugas']) ?></td>
+                                <td>
+                                    <?php if ($row['file_path']): ?>
+                                        <a href="../../uploads/<?= htmlspecialchars($row['file_path']) ?>" target="_blank">Lihat File</a>
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= htmlspecialchars($row['submitted_at']) ?></td>
+                                <td>
+                                    <?php
+                                    $status_badge = [
+                                        'pending' => 'warning',
+                                        'approved' => 'success',
+                                        'rejected' => 'danger'
+                                    ];
+                                    ?>
+                                    <span class="badge bg-<?= $status_badge[$row['status']] ?>"><?= ucfirst($row['status']) ?></span>
+                                </td>
+                                <td>
+                                    <?php if ($row['status'] === 'pending'): ?>
+                                        <a href="approve.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-success" onclick="return confirm('Setujui tugas ini?')">Setujui</a>
+                                        <a href="reject.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tolak tugas ini?')">Tolak</a>
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="7" class="text-center">Belum ada tugas yang dikumpulkan</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <nav aria-label="Page navigation">

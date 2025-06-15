@@ -2,7 +2,7 @@
 // dashboard/siswa/store/redeem_form.php
 session_start();
 require_once '../../includes/inc_koneksi.php';
-require_once '../dashboard_header.php'; // Memuat header dashboard untuk tampilan konsisten
+
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'siswa') {
     header("Location: ../../login.php");
@@ -97,6 +97,7 @@ if (mysqli_num_rows($cek_duplikat) > 0) {
 }
 
 // Jika semua validasi di atas lolos, form akan ditampilkan
+require_once '../dashboard_header.php'; // Memuat header dashboard untuk tampilan konsisten
 ?>
 
 <div class="content-wrapper mb-5">

@@ -60,40 +60,41 @@ $result = mysqli_query($koneksi, $query);
                 </form>
             </div>
         </div>
-
-        <table class="table table-bordered table-striped mt-2">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Judul</th>
-                    <th>Kelas</th>
-                    <th>Deadline</th>
-                    <th>Dibuat Oleh</th>
-                    <th>Dibuat Pada</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
-                    <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= htmlspecialchars($row['title']) ?></td>
-                            <td><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($row['deadline']) ?></td>
-                            <td><?= htmlspecialchars($row['pembuat'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($row['created_at']) ?></td>
-                            <td>
-                                <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
-                                <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Hapus tugas ini?')"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr><td colspan="7" class="text-center">Belum ada tugas</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mt-2 table-primary">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Judul</th>
+                        <th>Kelas</th>
+                        <th>Deadline</th>
+                        <th>Dibuat Oleh</th>
+                        <th>Dibuat Pada</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
+                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= htmlspecialchars($row['title']) ?></td>
+                                <td><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
+                                <td><?= htmlspecialchars($row['deadline']) ?></td>
+                                <td><?= htmlspecialchars($row['pembuat'] ?? '-') ?></td>
+                                <td><?= htmlspecialchars($row['created_at']) ?></td>
+                                <td>
+                                    <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
+                                    <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Hapus tugas ini?')"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="7" class="text-center">Belum ada tugas</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <nav aria-label="Page navigation">

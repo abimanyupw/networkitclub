@@ -139,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <ol class="breadcrumb gap-2">
             <li><a href="../../index.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li><a href="index.php">Store</a></li>
-            <li class="active">Edit</li>
         </ol>
     </section>
 

@@ -2,7 +2,7 @@
 // dashboard/redemptions/index.php
 session_start();
 require_once '../../includes/inc_koneksi.php';
-require_once '../dashboard_header.php';
+
 
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'developer', 'teknisi'])) {
     header("Location: ../../login.php");
@@ -22,6 +22,7 @@ if (in_array($status_filter, ['pending', 'approved', 'rejected'])) {
 }
 $query .= " ORDER BY r.created_at DESC";
 $result = mysqli_query($koneksi, $query);
+require_once '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5">
@@ -42,40 +43,41 @@ $result = mysqli_query($koneksi, $query);
                 <option value="rejected" <?= $status_filter === 'rejected' ? 'selected' : '' ?>>Rejected</option>
             </select>
         </form>
-
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Nama Siswa</th>
-                    <th>Barang</th>
-                    <th>Status</th>
-                    <th>Waktu</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (mysqli_num_rows($result) > 0): ?>
-                    <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row['full_name']) ?></td>
-                            <td><?= htmlspecialchars($row['item_name']) ?></td>
-                            <td><?= ucfirst($row['status']) ?></td>
-                            <td><?= $row['created_at'] ?></td>
-                            <td>
-                                <?php if ($row['status'] === 'pending'): ?>
-                                    <a href="process.php?id=<?= $row['id'] ?>&action=approve" class="btn btn-sm btn-success" onclick="return confirm('Setujui penukaran ini?')">Terima</a>
-                                    <a href="process.php?id=<?= $row['id'] ?>&action=reject" class="btn btn-sm btn-danger" onclick="return confirm('Tolak penukaran ini?')">Tolak</a>
-                                <?php else: ?>
-                                    <span class="text-muted">Tidak ada aksi</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr><td colspan="5" class="text-center">Tidak ada data.</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-primary">
+                <thead>
+                    <tr>
+                        <th>Nama Siswa</th>
+                        <th>Barang</th>
+                        <th>Status</th>
+                        <th>Waktu</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row['full_name']) ?></td>
+                                <td><?= htmlspecialchars($row['item_name']) ?></td>
+                                <td><?= ucfirst($row['status']) ?></td>
+                                <td><?= $row['created_at'] ?></td>
+                                <td>
+                                    <?php if ($row['status'] === 'pending'): ?>
+                                        <a href="process.php?id=<?= $row['id'] ?>&action=approve" class="btn btn-sm btn-success" onclick="return confirm('Setujui penukaran ini?')">Terima</a>
+                                        <a href="process.php?id=<?= $row['id'] ?>&action=reject" class="btn btn-sm btn-danger" onclick="return confirm('Tolak penukaran ini?')">Tolak</a>
+                                    <?php else: ?>
+                                        <span class="text-muted">Tidak ada aksi</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="5" class="text-center">Tidak ada data.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

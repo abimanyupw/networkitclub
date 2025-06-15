@@ -1,4 +1,5 @@
 <?php
+// dashboard/users/import_users.php
 // Aktifkan pelaporan kesalahan PHP untuk debugging.
 // Harap nonaktifkan ini di lingkungan produksi untuk keamanan.
 ini_set('display_errors', 1);
@@ -8,7 +9,6 @@ error_reporting(E_ALL);
 session_start();
 
 // Sertakan autoloader Composer untuk memuat kelas PhpSpreadsheet.
-// Sesuaikan path ini jika folder 'vendor' berada di lokasi yang berbeda.
 require '../../vendor/autoload.php';
 
 // Impor kelas yang diperlukan dari PhpSpreadsheet.
@@ -16,8 +16,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception as ReaderException;
 
 // Sertakan file header dashboard dan koneksi database.
-include '../dashboard_header.php';
-include '../../includes/inc_koneksi.php';
+include '../dashboard_header.php'; // Pastikan path ini benar
+include '../../includes/inc_koneksi.php'; // Pastikan path ini benar
 
 // Cek apakah user sudah login dan memiliki role yang diizinkan (admin atau developer).
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'developer')) {
@@ -58,15 +58,14 @@ if (isset($_POST['upload_csv']) && isset($_FILES['csv_file'])) {
             $spreadsheet = IOFactory::load($inputFileName);
             $sheet = $spreadsheet->getActiveSheet();
             $highestRow = $sheet->getHighestRow();    // Baris tertinggi yang berisi data
-            $highestColumn = $sheet->getHighestColumn(); // Kolom tertinggi yang berisi data (misal: 'E' untuk password)
+            $highestColumn = $sheet->getHighestColumn(); // Kolom tertinggi yang berisi data
 
             $imported_count = 0; // Jumlah pengguna yang berhasil diimpor
             $skipped_count = 0;  // Jumlah baris yang dilewati
-            $password_default = password_hash("password123", PASSWORD_DEFAULT); // Password default yang di-hash untuk pengguna baru
-
+            
             // Siapkan statement INSERT sekali di luar loop untuk efisiensi.
-            // Perhatikan penambahan 'full_name' di query INSERT.
-            $stmt = $koneksi->prepare("INSERT INTO users (username, email, full_name, role, password) VALUES (?, ?, ?, ?, ?)");
+            // Perhatikan penambahan 'jurusan' dan 'kelas' di query INSERT
+            $stmt = $koneksi->prepare("INSERT INTO users (username, email, full_name, role, password, jurusan, kelas) VALUES (?, ?, ?, ?, ?, ?, ?)");
             if ($stmt === false) {
                 $upload_error = "Gagal menyiapkan statement INSERT: " . $koneksi->error;
                 error_log("IMPOR ERROR: Gagal menyiapkan statement INSERT - " . $koneksi->error);
@@ -74,11 +73,10 @@ if (isset($_POST['upload_csv']) && isset($_FILES['csv_file'])) {
                 // Iterasi setiap baris data, mulai dari baris ke-2 (mengabaikan header di baris pertama).
                 for ($row = 2; $row <= $highestRow; ++$row) {
                     // Ambil data dari baris saat ini.
-                    // 'A' . $row . ':' . $highestColumn . $row' akan mengambil semua sel dari kolom A hingga kolom terakhir.
                     $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
                         NULL, // set $nullValue to null (default)
                         TRUE, // return values as an array
-                        TRUE  // format cell values (misal: tanggal diformat sebagai string)
+                        TRUE  // format cell values
                     );
 
                     // Pastikan $rowData tidak kosong dan memiliki elemen pertama (baris data).
@@ -91,51 +89,55 @@ if (isset($_POST['upload_csv']) && isset($_FILES['csv_file'])) {
                     $actualRowData = $rowData[0]; // Ini adalah array yang berisi nilai sel untuk baris ini (0-indexed).
 
                     // Ambil data dari array $actualRowData menggunakan indeks numerik.
-                    // Urutan kolom sesuai template: username (0), email (1), full_name (2), role (3), password (4)
+                    // Asumsi urutan kolom di Excel:
+                    // A: username (0), B: email (1), C: full_name (2), D: role (3), E: password (4), F: jurusan (5), G: kelas (6)
                     $username = isset($actualRowData[0]) ? trim($actualRowData[0]) : '';
                     $email = isset($actualRowData[1]) ? trim($actualRowData[1]) : '';
-                    $full_name = isset($actualRowData[2]) ? trim($actualRowData[2]) : ''; // Kolom C (full_name)
-                    $role = isset($actualRowData[3]) ? strtolower(trim($actualRowData[3])) : ''; // Kolom D (role)
-                    // Password dari file (kolom E) tidak digunakan untuk password default, tapi bisa diakses jika dibutuhkan.
-                    // $password_from_file = isset($actualRowData[4]) ? trim($actualRowData[4]) : '';
+                    $full_name = isset($actualRowData[2]) ? trim($actualRowData[2]) : ''; 
+                    $role = isset($actualRowData[3]) ? strtolower(trim($actualRowData[3])) : ''; 
+                    $password_from_file = isset($actualRowData[4]) ? trim($actualRowData[4]) : ''; // <<< Password dari Kolom E
+                    $jurusan = isset($actualRowData[5]) ? trim($actualRowData[5]) : ''; // <<< Jurusan dari Kolom F
+                    $kelas = isset($actualRowData[6]) ? trim($actualRowData[6]) : '';     // <<< Kelas dari Kolom G
 
                     $is_skipped_due_to_role = false; // Flag untuk menandai apakah baris dilewati karena batasan peran
 
                     // --- LOGIKA VALIDASI PERAN ---
-                    // Definisikan peran yang diizinkan untuk diimpor oleh setiap role yang login.
-                    $allowed_roles_for_admin = ['user', 'teknisi', 'siswa'];
-                    $allowed_roles_for_developer = ['user', 'admin', 'developer', 'teknisi', 'siswa'];
-
+                    $allowed_roles_for_admin = ['user', 'teknisi', 'siswa']; // Admin bisa mengimpor ini
+                    // Developer dapat mengunggah peran apa pun kecuali admin jika diinginkan (tergantung kebijakan)
+                    // Jika login role developer, maka semua role boleh diimpor, jadi tidak ada batasan khusus.
                     if ($_SESSION['role'] === 'admin') {
-                        // Admin hanya bisa mengunggah peran yang ada di $allowed_roles_for_admin.
                         if (!in_array($role, $allowed_roles_for_admin)) {
                             $skipped_count++;
                             error_log("IMPOR ERROR: Admin mencoba mengunggah peran '" . $role . "' yang tidak diizinkan. Baris dilewati: Username: " . $username . " (Baris Excel: " . $row . ")");
                             $is_skipped_due_to_role = true;
                         }
                     }
-                    // Developer dapat mengunggah peran apa pun, jadi tidak perlu validasi tambahan di sini.
-                    // Anda bisa menambahkan validasi untuk developer jika ada batasan khusus.
                     // --- AKHIR LOGIKA VALIDASI PERAN ---
 
                     // Validasi dasar data dan cek duplikasi hanya jika baris tidak dilewati karena batasan peran.
+                    // Password, Username, Email, Role WAJIB ada dan valid. Jurusan dan Kelas opsional di sini.
                     if (!$is_skipped_due_to_role) {
-                        // Pastikan username, email, dan role tidak kosong, dan email valid.
-                        if (!empty($username) && !empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL) && !empty($role)) {
+                        if (!empty($username) && !empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL) && !empty($role) && !empty($password_from_file)) { 
                             // Cek apakah username atau email sudah ada di database (duplikasi).
                             $check_stmt = $koneksi->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+                            if ($check_stmt === false) {
+                                error_log("IMPOR ERROR: Gagal menyiapkan check_stmt duplikasi - " . $koneksi->error);
+                                $skipped_count++;
+                                continue; // Lanjutkan ke baris berikutnya
+                            }
                             $check_stmt->bind_param("ss", $username, $email);
                             $check_stmt->execute();
                             $check_result = $check_stmt->get_result();
 
                             if ($check_result->num_rows == 0) {
                                 // Jika tidak ada duplikasi, lanjutkan proses INSERT.
-                                // Bind parameter sesuai urutan di query INSERT: username, email, full_name, role, password.
-                                $stmt->bind_param("sssss", $username, $email, $full_name, $role, $password_default);
+                                $hashed_password = password_hash($password_from_file, PASSWORD_DEFAULT); 
+
+                                // Bind parameter sesuai urutan di query INSERT: username, email, full_name, role, password, jurusan, kelas
+                                $stmt->bind_param("sssssss", $username, $email, $full_name, $role, $hashed_password, $jurusan, $kelas); 
                                 if ($stmt->execute()) {
                                     $imported_count++;
                                 } else {
-                                    // Tangani error saat menyisipkan data ke database.
                                     error_log("IMPOR ERROR: Gagal menyisipkan data database untuk Username: " . $username . ", Email: " . $email . ". MySQL Error: " . $stmt->error . " (Baris Excel: " . $row . ")");
                                     $skipped_count++;
                                 }
@@ -144,11 +146,11 @@ if (isset($_POST['upload_csv']) && isset($_FILES['csv_file'])) {
                                 $skipped_count++;
                                 error_log("IMPOR ERROR: Duplikasi Username atau Email ditemukan. Baris dilewati: Username: " . $username . ", Email: " . $email . " (Baris Excel: " . $row . ")");
                             }
-                            $check_stmt->close(); // Tutup check_stmt setelah digunakan di setiap iterasi.
+                            $check_stmt->close(); 
                         } else {
                             // Baris dilewati karena data tidak valid atau tidak lengkap.
                             $skipped_count++;
-                            error_log("IMPOR ERROR: Data tidak valid/lengkap. Baris dilewati: Username: '" . $username . "', Email: '" . $email . "'. (Email valid: " . (filter_var($email, FILTER_VALIDATE_EMAIL) ? 'true' : 'false') . ", Username empty: " . (empty($username) ? 'true' : 'false') . ", Email empty: " . (empty($email) ? 'true' : 'false') . ", Role empty: " . (empty($role) ? 'true' : 'false') . ") (Baris Excel: " . $row . ")");
+                            error_log("IMPOR ERROR: Data tidak valid/lengkap (username/email/role/password kosong/email tidak valid). Baris dilewati: Username: '" . $username . "', Email: '" . $email . "'. (Email valid: " . (filter_var($email, FILTER_VALIDATE_EMAIL) ? 'true' : 'false') . ", Username empty: " . (empty($username) ? 'true' : 'false') . ", Email empty: " . (empty($email) ? 'true' : 'false') . ", Role empty: " . (empty($role) ? 'true' : 'false') . ", Password empty: " . (empty($password_from_file) ? 'true' : 'false') . ") (Baris Excel: " . $row . ")");
                         }
                     } // End of if (!$is_skipped_due_to_role)
                 } // End of for loop
@@ -165,16 +167,13 @@ if (isset($_POST['upload_csv']) && isset($_FILES['csv_file'])) {
             }
 
         } catch (ReaderException $e) {
-            // Tangani kesalahan saat membaca file Excel/CSV.
             $upload_error = "Gagal membaca file Excel/CSV: " . $e->getMessage();
             error_log("IMPOR EXCEL ERROR (ReaderException): " . $e->getMessage());
         } catch (Exception $e) {
-            // Tangani kesalahan tak terduga lainnya.
             $upload_error = "Terjadi kesalahan tak terduga: " . $e->getMessage();
             error_log("IMPOR UMUM ERROR (Exception): " . $e->getMessage());
         }
     } else {
-        // Pesan error jika tipe file tidak didukung.
         $upload_error = "Tipe file tidak didukung. Harap unggah file CSV, XLS, atau XLSX.";
     }
 }
@@ -222,6 +221,8 @@ if (isset($_POST['upload_csv']) && isset($_FILES['csv_file'])) {
 
 <?php
 // Pastikan koneksi database ditutup
-$koneksi->close();
-include '../dashboard_footer.php';
+if (isset($koneksi) && is_object($koneksi) && $koneksi->ping()) { 
+    $koneksi->close();
+}
+include '../dashboard_footer.php'; // Sertakan footer dashboard
 ?>

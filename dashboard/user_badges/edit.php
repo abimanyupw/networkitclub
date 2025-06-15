@@ -16,7 +16,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $id = intval($_GET['id']);
-
+$page_title='Edit Badges User';
 // Ambil data lama
 $query = "SELECT * FROM user_badges WHERE id = $id";
 $result = mysqli_query($koneksi, $query);
@@ -50,8 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once '../dashboard_header.php';
 ?>
 
-<div class="container mt-5">
-    <h2>Edit Badge Siswa</h2>
+<div class="content-wrapper mb-5" style="min-width: 100%;">
+    <section class="content-header">
+        <h1><?= $page_title ?></h1>
+        <ol class="breadcrumb gap-2">
+            <li><a href="../../index.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="index.php">Manajemen Badges User</a></li>
+        </ol>
+    </section>
     <form method="POST" class="mt-4">
         <div class="mb-3">
             <label for="user_id" class="form-label">Siswa</label>

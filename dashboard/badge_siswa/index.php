@@ -2,7 +2,7 @@
 // user/badges/index.php
 session_start();
 require_once '../../includes/inc_koneksi.php';
-require_once '../dashboard_header.php';
+
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'siswa') {
     header("Location: ../../login.php");
@@ -29,6 +29,7 @@ $filter_condition
 ORDER BY b.name
 ";
 $result = mysqli_query($koneksi, $query);
+require_once '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5">

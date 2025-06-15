@@ -1,6 +1,5 @@
 <?php
 session_start();
-include '../dashboard_header.php';
 include '../../includes/inc_koneksi.php';
 
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'developer', 'teknisi'])) {
@@ -39,6 +38,7 @@ ORDER BY ub.given_at DESC
 LIMIT $limit OFFSET $offset
 ";
 $result = mysqli_query($koneksi, $query);
+include '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper mb-5" style="min-width: 100%;">
@@ -54,6 +54,9 @@ $result = mysqli_query($koneksi, $query);
        <div class="box-header with-border">
             <h3 class="box-title m-0">Riwayat Badge Siswa</h3>
             <div class="box-tools pull-right d-flex align-items-center gap-2">
+                <a href="add.php" class="btn btn-primary">
+                    <i class="fa fa-plus me-1"></i> Tambah Badge Baru
+                </a>
                 <form action="" method="GET" class="search-form d-flex align-items-center">
                     <div class="input-group">
                         <input type="text" name="search" class="form-control" placeholder="Cari badge atau siswa..." value="<?= htmlspecialchars($search_query) ?>">
@@ -63,45 +66,43 @@ $result = mysqli_query($koneksi, $query);
                     </div>
                 </form>
 
-                <a href="add.php" class="btn btn-primary">
-                    <i class="fa fa-plus me-1"></i> Tambah Badge Baru
-                </a>
             </div>
         </div>
-
-        <table class="table table-bordered table-striped mt-2">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Siswa</th>
-                    <th>Badge</th>
-                    <th>Diberikan Oleh</th>
-                    <th>Tanggal</th>
-                    <th>Catatan</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
-                    <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= htmlspecialchars($row['siswa']) ?></td>
-                            <td><?= htmlspecialchars($row['badge']) ?></td>
-                            <td><?= htmlspecialchars($row['pemberi'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($row['given_at']) ?></td>
-                            <td><?= htmlspecialchars($row['note']) ?></td>
-                            <td>
-                                <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
-                                <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Hapus pemberian badge ini?')"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr><td colspan="7" class="text-center">Belum ada badge yang diberikan</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mt-2 table-primary">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Siswa</th>
+                        <th>Badge</th>
+                        <th>Diberikan Oleh</th>
+                        <th>Tanggal</th>
+                        <th>Catatan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): $no = $offset + 1; ?>
+                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= htmlspecialchars($row['siswa']) ?></td>
+                                <td><?= htmlspecialchars($row['badge']) ?></td>
+                                <td><?= htmlspecialchars($row['pemberi'] ?? '-') ?></td>
+                                <td><?= htmlspecialchars($row['given_at']) ?></td>
+                                <td><?= htmlspecialchars($row['note']) ?></td>
+                                <td>
+                                    <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
+                                    <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Hapus pemberian badge ini?')"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="7" class="text-center">Belum ada badge yang diberikan</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <nav aria-label="Page navigation">

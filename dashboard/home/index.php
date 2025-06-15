@@ -6,8 +6,7 @@ session_start(); // Memulai sesi PHP
 // Mengikutkan file koneksi database (MySQLi)
 require_once '../../includes/inc_koneksi.php'; // Pastikan jalur ini benar
 
-// Mengikutkan header dashboard (pastikan ini ada dan berfungsi)
-require_once '../dashboard_header.php';
+
 
 // Memeriksa otorisasi pengguna
 if (!isset($_SESSION['user_id']) || (!in_array($_SESSION['role'], ['developer', 'admin']))) {
@@ -108,6 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // --- AKHIR BAGIAN DATABASE NYATA ---
     }
 }
+// Mengikutkan header dashboard (pastikan ini ada dan berfungsi)
+require_once '../dashboard_header.php';
 ?>
 
 <div class="content-wrapper">
